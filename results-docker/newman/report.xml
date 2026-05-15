@@ -1,38 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="api-testing-coffee-cart" tests="5" time="0.411">
-  <testsuite name="collection-of-gets / get-index" id="4de8670c-8307-428e-89ea-8b0ca0b2e596" timestamp="2026-05-15T20:04:05.832Z" tests="5" failures="0" errors="0" time="0.198">
-    <testcase name="Es HTML" time="0.198" classname="ApiTestingCoffeeCart"/>
-    <testcase name="Contiene formulario de reset" time="0.198" classname="ApiTestingCoffeeCart"/>
-    <testcase name="La respuesta contiene contenido esperado" time="0.198" classname="ApiTestingCoffeeCart"/>
-    <testcase name="Tiempo de respuesta aceptable" time="0.198" classname="ApiTestingCoffeeCart"/>
-    <testcase name="La respuesta no está vacía" time="0.198" classname="ApiTestingCoffeeCart"/>
+<testsuites name="api-testing-coffee-cart" tests="5" time="0.384">
+  <testsuite name="collection-of-gets / get-index" id="1b3bbb4b-e967-4470-b6cd-8233fef48e04" timestamp="2026-05-15T20:11:55.968Z" tests="5" failures="0" errors="0" time="0.199">
+    <testcase name="Es HTML" time="0.199" classname="ApiTestingCoffeeCart"/>
+    <testcase name="Contiene formulario de reset" time="0.199" classname="ApiTestingCoffeeCart"/>
+    <testcase name="La respuesta contiene contenido esperado" time="0.199" classname="ApiTestingCoffeeCart"/>
+    <testcase name="Tiempo de respuesta aceptable" time="0.199" classname="ApiTestingCoffeeCart"/>
+    <testcase name="La respuesta no está vacía" time="0.199" classname="ApiTestingCoffeeCart"/>
   </testsuite>
-  <testsuite name="collection-of-gets / cart" id="2c942612-a056-49eb-a8d2-8f55da3bbca9" timestamp="2026-05-15T20:04:05.832Z" tests="5" failures="0" errors="0" time="0.056">
-    <testcase name="Es HTML" time="0.056" classname="ApiTestingCoffeeCart"/>
-    <testcase name="Contiene formulario de reset" time="0.056" classname="ApiTestingCoffeeCart"/>
-    <testcase name="La respuesta contiene contenido esperado" time="0.056" classname="ApiTestingCoffeeCart"/>
-    <testcase name="Tiempo de respuesta aceptable" time="0.056" classname="ApiTestingCoffeeCart"/>
-    <testcase name="La respuesta no está vacía" time="0.056" classname="ApiTestingCoffeeCart"/>
+  <testsuite name="collection-of-gets / cart" id="ee227816-0ecb-4e9a-a0cf-32b0c840156d" timestamp="2026-05-15T20:11:55.968Z" tests="5" failures="0" errors="0" time="0.050">
+    <testcase name="Es HTML" time="0.050" classname="ApiTestingCoffeeCart"/>
+    <testcase name="Contiene formulario de reset" time="0.050" classname="ApiTestingCoffeeCart"/>
+    <testcase name="La respuesta contiene contenido esperado" time="0.050" classname="ApiTestingCoffeeCart"/>
+    <testcase name="Tiempo de respuesta aceptable" time="0.050" classname="ApiTestingCoffeeCart"/>
+    <testcase name="La respuesta no está vacía" time="0.050" classname="ApiTestingCoffeeCart"/>
   </testsuite>
-  <testsuite name="collection-of-gets / github" id="988371f4-e999-4b10-83a6-cf676b5a23ed" timestamp="2026-05-15T20:04:05.832Z" tests="5" failures="0" errors="0" time="0.048">
-    <testcase name="Es HTML" time="0.048" classname="ApiTestingCoffeeCart"/>
-    <testcase name="Contiene formulario de reset" time="0.048" classname="ApiTestingCoffeeCart"/>
-    <testcase name="La respuesta contiene contenido esperado" time="0.048" classname="ApiTestingCoffeeCart"/>
-    <testcase name="Tiempo de respuesta aceptable" time="0.048" classname="ApiTestingCoffeeCart"/>
-    <testcase name="La respuesta no está vacía" time="0.048" classname="ApiTestingCoffeeCart"/>
+  <testsuite name="collection-of-gets / github" id="63ff03b3-37e7-47d7-abbd-bd2cd47e2eca" timestamp="2026-05-15T20:11:55.968Z" tests="5" failures="0" errors="0" time="0.045">
+    <testcase name="Es HTML" time="0.045" classname="ApiTestingCoffeeCart"/>
+    <testcase name="Contiene formulario de reset" time="0.045" classname="ApiTestingCoffeeCart"/>
+    <testcase name="La respuesta contiene contenido esperado" time="0.045" classname="ApiTestingCoffeeCart"/>
+    <testcase name="Tiempo de respuesta aceptable" time="0.045" classname="ApiTestingCoffeeCart"/>
+    <testcase name="La respuesta no está vacía" time="0.045" classname="ApiTestingCoffeeCart"/>
   </testsuite>
-  <testsuite name="collection-of-gets / breake-cart" id="3665ed81-ff13-4a57-9af3-7b15ed6a1741" timestamp="2026-05-15T20:04:05.832Z" tests="5" failures="0" errors="0" time="0.055">
-    <testcase name="Es HTML" time="0.055" classname="ApiTestingCoffeeCart"/>
-    <testcase name="Contiene formulario de reset" time="0.055" classname="ApiTestingCoffeeCart"/>
-    <testcase name="La respuesta contiene contenido esperado" time="0.055" classname="ApiTestingCoffeeCart"/>
-    <testcase name="Tiempo de respuesta aceptable" time="0.055" classname="ApiTestingCoffeeCart"/>
-    <testcase name="La respuesta no está vacía" time="0.055" classname="ApiTestingCoffeeCart"/>
+  <testsuite name="collection-of-gets / breake-cart" id="59ead7cd-2975-4e7a-ba9c-363da4368346" timestamp="2026-05-15T20:11:55.968Z" tests="5" failures="0" errors="0" time="0.045">
+    <testcase name="Es HTML" time="0.045" classname="ApiTestingCoffeeCart"/>
+    <testcase name="Contiene formulario de reset" time="0.045" classname="ApiTestingCoffeeCart"/>
+    <testcase name="La respuesta contiene contenido esperado" time="0.045" classname="ApiTestingCoffeeCart"/>
+    <testcase name="Tiempo de respuesta aceptable" time="0.045" classname="ApiTestingCoffeeCart"/>
+    <testcase name="La respuesta no está vacía" time="0.045" classname="ApiTestingCoffeeCart"/>
   </testsuite>
-  <testsuite name="collection-of-gets / app-with-adds" id="0024679d-cd28-4672-9064-35b65a04ad53" timestamp="2026-05-15T20:04:05.832Z" tests="5" failures="0" errors="0" time="0.054">
-    <testcase name="Es HTML" time="0.054" classname="ApiTestingCoffeeCart"/>
-    <testcase name="Contiene formulario de reset" time="0.054" classname="ApiTestingCoffeeCart"/>
-    <testcase name="La respuesta contiene contenido esperado" time="0.054" classname="ApiTestingCoffeeCart"/>
-    <testcase name="Tiempo de respuesta aceptable" time="0.054" classname="ApiTestingCoffeeCart"/>
-    <testcase name="La respuesta no está vacía" time="0.054" classname="ApiTestingCoffeeCart"/>
+  <testsuite name="collection-of-gets / app-with-adds" id="a230d18c-80d2-4baa-8185-b4a5bc8c89f7" timestamp="2026-05-15T20:11:55.968Z" tests="5" failures="0" errors="0" time="0.045">
+    <testcase name="Es HTML" time="0.045" classname="ApiTestingCoffeeCart"/>
+    <testcase name="Contiene formulario de reset" time="0.045" classname="ApiTestingCoffeeCart"/>
+    <testcase name="La respuesta contiene contenido esperado" time="0.045" classname="ApiTestingCoffeeCart"/>
+    <testcase name="Tiempo de respuesta aceptable" time="0.045" classname="ApiTestingCoffeeCart"/>
+    <testcase name="La respuesta no está vacía" time="0.045" classname="ApiTestingCoffeeCart"/>
   </testsuite>
 </testsuites>
