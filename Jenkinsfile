@@ -16,7 +16,7 @@ pipeline{
                     docker network rm pipeline-coffee-cart_qa-network 2>/dev/null || true
                     
                     docker network prune -f
-                    WORKSPACE_PATH="${WORKSPACE}" docker-compose down -v --remove-orphans 2>/dev/null || true
+                    docker-compose down -v --remove-orphans 2>/dev/null || true
                 '''
             }
         }
@@ -26,25 +26,25 @@ pipeline{
             stages {
                 stage('Apis'){
                     steps{
-                        sh 'WORKSPACE_PATH="${WORKSPACE}" docker-compose up --build --abort-on-container-exit api-tests'
+                        sh 'docker-compose up --build --abort-on-container-exit api-tests'
                     }
                 }
 
                 stage('Cypress'){
                     steps{
-                        sh 'WORKSPACE_PATH="${WORKSPACE}" docker-compose up --build --abort-on-container-exit cypress-tests'
+                        sh 'docker-compose up --build --abort-on-container-exit cypress-tests'
                     }
                 }
 
                 stage('Jmeter'){
                     steps{
-                        sh 'WORKSPACE_PATH="${WORKSPACE}" docker-compose up --build --abort-on-container-exit jmeter-tests'
+                        sh 'docker-compose up --build --abort-on-container-exit jmeter-tests'
                     }
                 }
 
                 stage ('Zap'){
                     steps{
-                        sh 'WORKSPACE_PATH="${WORKSPACE}" docker-compose up --build --abort-on-container-exit zap-tests'
+                        sh 'docker-compose up --build --abort-on-container-exit zap-tests'
                     }
                 }
             }
@@ -54,7 +54,7 @@ pipeline{
 
     post{
         always {
-            sh 'WORKSPACE_PATH="${WORKSPACE}" docker-compose down --remove-orphans || true'
+            sh 'docker-compose down --remove-orphans || true'
     }
     success {
         echo 'Todas las pruebas se ejecutaron correctamente.'
