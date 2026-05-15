@@ -4,8 +4,8 @@ services:
     container_name: api-test-coffee-app
 
     volumes:
-      - ./api-testing/postman:/etc/newman/postman
-      - ./results-docker/newman:/etc/newman/results
+      - ${PWD}/api-testing/postman:/etc/newman/postman
+      - ${PWD}/results-docker/newman:/etc/newman/results
 
     entrypoint: sh
 
