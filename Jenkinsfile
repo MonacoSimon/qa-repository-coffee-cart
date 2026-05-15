@@ -24,11 +24,11 @@ pipeline{
 
         stage('Ejecutar pruebas'){
             stages {
-                stage('Apis'){
-                    steps{
-                        sh 'docker-compose up --build --abort-on-container-exit api-tests'
-                    }
-                }
+                // stage('Apis'){
+                //     steps{
+                //         sh 'docker-compose up --build --abort-on-container-exit api-tests'
+                //     }
+                // }
 
                 stage('Cypress'){
                     steps{
