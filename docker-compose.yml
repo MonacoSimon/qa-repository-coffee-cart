@@ -1,0 +1,59 @@
+services:
+  api-tests:
+    image: postman/newman:latest
+    container_name: api-test-coffee-app
+    volumes:
+      - ./api-testing/postman:/etc/newman/postman
+      - ./results-docker/newman:/etc/newman/results
+    command: >
+      run /etc/newman/postman/collections/api-testing-coffee-cart.postman_collection.json -e /etc/newman/postman/enviroment/environment-coffee-cart.postman_environment.json --env-var "urlBase=https://coffee-cart.app/" -r cli,json,junit --reporter-json-export /etc/newman/results/report.json --reporter-junit-export /etc/newman/results/report.xml
+    networks:
+      - qa-network
+
+  cypress-tests:
+    build:
+      context: ./automation
+      dockerfile: Dockerfile
+    container_name: cypress-test-coffee-app
+    volumes:
+      - ./automation:/cypress:/e2e
+    command: [ "cypress", "run" ]
+    depends_on:
+      - api-tests
+    networks:
+      - qa-network
+
+  zap-tests:
+    image: zaproxy/zap-stable:latest
+    container_name: zap-test-coffee-app
+    user: root
+    volumes:
+      - ./results-docker/zap:/zap/wrk
+    command: >
+      zap-baseline.py -t https://coffee-cart.app/ -r report.html -I
+    depends_on:
+      - cypress-tests
+    networks:
+      - qa-network
+
+  jmeter-tests:
+    image: justb4/jmeter:latest
+    container_name: jmeter-test-coffee-app
+    volumes:
+      - ./performance/jmeter/test-plan:/tests
+      - ./results-docker/jmeter:/results
+    entrypoint: >
+      sh -c "for test in /tests/*.jmx; do
+        filename=$$(basename $$test .jmx);
+        timestamp=$$(date +%Y%m%d-%H%M%S);
+        echo Ejecutando: $$filename;
+        jmeter -n -f -t $$test -l /results/$$filename.jtl -e -o /results/$$filename-report-$$timestamp -j /results/$$filename.log;
+        echo ✔ Terminado: $$filename;
+        echo -----------------------------;
+      done"
+    networks:
+      - qa-network
+
+networks:
+  qa-network:
+    driver: bridge

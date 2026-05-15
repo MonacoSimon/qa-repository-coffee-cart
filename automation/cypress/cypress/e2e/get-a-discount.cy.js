@@ -1,0 +1,17 @@
+describe('template spec', () => {
+  it('passes', () => {
+    cy.visit('https://coffee-cart.app/')
+    cy.get('.router-link-active').should('be.visible')
+    cy.get('[data-cy="Espresso-Macchiato"]').click()
+    cy.get('[data-cy="Americano"]').click()
+    cy.get('[data-cy="Mocha"]').click()
+    cy.get('.promo > span').should('contain', "It's your lucky day! Get an extra cup of Mocha for $4")
+    cy.get('.yes').click()
+    cy.get(':nth-child(2) > a').should('contain', 'cart (4)')
+    cy.get(':nth-child(2) > a').click()
+    cy.get('ul[data-v-8965af83=""] > .list-item > :nth-child(1)').should('contain', 'Espresso Macchiato')
+    cy.get('ul[data-v-8965af83=""] > .list-item > :nth-child(1)').should('contain', 'Americano')
+    cy.get('ul[data-v-8965af83=""] > .list-item > :nth-child(1)').should('contain', 'Mocha')
+    cy.get('[data-test="checkout"]').should('contain', 'Total: $31.00')
+  })
+})

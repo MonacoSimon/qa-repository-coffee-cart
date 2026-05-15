@@ -1,0 +1,16 @@
+{
+  "name": "cypress",
+  "version": "1.0.0",
+  "description": "set de pruebas automatizadas con cypress",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "cypress:open": "cypress open"
+  },
+  "author": "simon monaco",
+  "license": "ISC",
+  "devDependencies": {
+    "cypress": "^15.15.0",
+    "cypress-axe": "^1.7.0"
+  }
+}
