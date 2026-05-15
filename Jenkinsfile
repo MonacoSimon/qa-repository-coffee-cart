@@ -6,15 +6,17 @@ pipeline{
         stage('Clean up previous containers') {
             steps {
                 sh '''
-                    docker rm -f api-test-coffee-app || true
-                    docker rm -f jmeter-test-coffee-app || true
-                    docker rm -f zap-test-coffee-app || true
-                    docker rm -f cypress-test-coffee-app || true
+                    docker rm -f api-test-coffee-app 2>/dev/null || true
+                    docker rm -f jmeter-test-coffee-app 2>/dev/null || true
+                    docker rm -f zap-test-coffee-app 2>/dev/null || true
+                    docker rm -f cypress-test-coffee-app 2>/dev/null || true
                     
-                    docker rm -f $(docker ps -a -q --filter "name=coffee") || true
-                    docker network prune -f || true
+                    docker ps -a --filter "name=coffee" -q | xargs -r docker rm -f
                     
-                    docker-compose down --remove-orphans || true
+                    docker network rm pipeline-coffee-cart_qa-network 2>/dev/null || true
+                    
+                    docker network prune -f
+                    docker-compose down -v --remove-orphans 2>/dev/null || true
                 '''
             }
         }
