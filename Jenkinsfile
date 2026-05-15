@@ -2,7 +2,15 @@ pipeline{
     agent any
     stages{
 
-
+        stage('Debug') {
+            steps {
+                sh '''
+                pwd
+                ls -la
+                find . -name "*.postman_environment.json"
+                '''
+            }
+        }
         stage('Clean up previous containers') {
             steps {
                 sh '''
