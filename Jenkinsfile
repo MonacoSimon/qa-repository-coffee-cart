@@ -50,5 +50,6 @@ pipeline{
         echo 'Todas las pruebas se ejecutaron correctamente.'
         archiveArtifacts artifacts: 'results-docker/**', allowEmptyArchive: true
         junit 'results-docker/**/*.xml'
+        }
     }
 }
