@@ -4,12 +4,14 @@ services:
     container_name: api-test-coffee-app
 
     volumes:
-      - ${PWD}/api-testing/postman:/etc/newman/postman
-      - ${PWD}/results-docker/newman:/etc/newman/results
+      - ./api-testing/postman:/etc/newman/postman
+      - ./results-docker/newman:/etc/newman/results
 
     entrypoint: sh
 
-    command: -c " echo 'Contenido de /etc/newman/postman:' && ls -R /etc/newman/postman && newman run /etc/newman/postman/collections/api-testing-coffee-cart.postman_collection.json -e /etc/newman/postman/enviroment/environment-coffee-cart.postman_environment.json --env-var 'urlBase=https://coffee-cart.app/' -r cli,json,junit --reporter-json-export /etc/newman/results/report.json --reporter-junit-export /etc/newman/results/report.xml "
+    command: -c " echo 'Contenido de /etc/newman/postman:' && ls -R /etc/newman/postman && newman run /etc/newman/postman/collections/api-testing-coffee-cart.postman_collection.json --env-var 'urlBase=https://coffee-cart.app/' -r cli,json,junit --reporter-json-export /etc/newman/results/report.json --reporter-junit-export /etc/newman/results/report.xml "
+    networks:
+      - qa-network
 
   cypress-tests:
     build:
