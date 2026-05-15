@@ -15,8 +15,6 @@ services:
       context: ./automation
       dockerfile: Dockerfile
     container_name: cypress-test-coffee-app
-    volumes:
-      - ./automation:/cypress:/e2e
     command: [ "cypress", "run" ]
     depends_on:
       - api-tests

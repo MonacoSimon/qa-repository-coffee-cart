@@ -23,32 +23,30 @@ pipeline{
 
 
         stage('Ejecutar pruebas'){
-            parallel{
-                
-                stage('Cypress'){
+            stages {
+                stage('Apis'){
                     steps{
-                        sh 'docker-compose up cypress-tests'
+                        sh 'docker-compose up --build --abort-on-container-exit api-tests'
                     }
                 }
 
-                stage('Apis'){
+                stage('Cypress'){
                     steps{
-                        sh 'docker-compose up api-tests'
+                        sh 'docker-compose up --build --abort-on-container-exit cypress-tests'
                     }
                 }
 
                 stage('Jmeter'){
                     steps{
-                        sh 'docker-compose up jmeter-tests'
+                        sh 'docker-compose up --build --abort-on-container-exit jmeter-tests'
                     }
                 }
 
                 stage ('Zap'){
                     steps{
-                        sh 'docker-compose up zap-tests'
+                        sh 'docker-compose up --build --abort-on-container-exit zap-tests'
                     }
                 }
-
             }
         }
 
