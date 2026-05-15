@@ -5,7 +5,7 @@ pipeline{
 
         stage('Clean up previous containers') {
             steps {
-                sh 'docker-compose down --remove-orphans || true'
+                sh 'docker compose down --remove-orphans || true'
             }
         }
 
@@ -15,25 +15,25 @@ pipeline{
                 
                 stage('Cypress'){
                     steps{
-                        sh 'docker-compose up cypress-tests'
+                        sh 'docker compose up cypress-tests'
                     }
                 }
 
                 stage('Apis'){
                     steps{
-                        sh 'docker-compose up api-tests'
+                        sh 'docker compose up api-tests'
                     }
                 }
 
                 stage('Jmeter'){
                     steps{
-                        sh 'docker-compose up jmeter-tests'
+                        sh 'docker compose up jmeter-tests'
                     }
                 }
 
                 stage ('Zap'){
                     steps{
-                        sh 'docker-compose up zap-tests'
+                        sh 'docker compose up zap-tests'
                     }
                 }
 
@@ -44,7 +44,7 @@ pipeline{
 
     post{
         always {
-            sh 'docker-compose down --remove-orphans || true'
+            sh 'docker compose down --remove-orphans || true'
     }
     success {
         echo 'Todas las pruebas se ejecutaron correctamente.'
