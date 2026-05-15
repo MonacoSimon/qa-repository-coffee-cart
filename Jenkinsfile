@@ -16,7 +16,7 @@ pipeline{
                     docker network rm pipeline-coffee-cart_qa-network 2>/dev/null || true
                     
                     docker network prune -f
-                    docker-compose down -v --remove-orphans 2>/dev/null || true
+                    WORKSPACE_PATH="${WORKSPACE}" docker-compose down -v --remove-orphans 2>/dev/null || true
                 '''
             }
         }
@@ -24,27 +24,27 @@ pipeline{
 
         stage('Ejecutar pruebas'){
             stages {
-                // stage('Apis'){
-                //     steps{
-                //         sh 'docker-compose up --build --abort-on-container-exit api-tests'
-                //     }
-                // }
+                stage('Apis'){
+                    steps{
+                        sh 'WORKSPACE_PATH="${WORKSPACE}" docker-compose up --build --abort-on-container-exit api-tests'
+                    }
+                }
 
                 stage('Cypress'){
                     steps{
-                        sh 'docker-compose up --build --abort-on-container-exit cypress-tests'
+                        sh 'WORKSPACE_PATH="${WORKSPACE}" docker-compose up --build --abort-on-container-exit cypress-tests'
                     }
                 }
 
                 stage('Jmeter'){
                     steps{
-                        sh 'docker-compose up --build --abort-on-container-exit jmeter-tests'
+                        sh 'WORKSPACE_PATH="${WORKSPACE}" docker-compose up --build --abort-on-container-exit jmeter-tests'
                     }
                 }
 
                 stage ('Zap'){
                     steps{
-                        sh 'docker-compose up --build --abort-on-container-exit zap-tests'
+                        sh 'WORKSPACE_PATH="${WORKSPACE}" docker-compose up --build --abort-on-container-exit zap-tests'
                     }
                 }
             }
@@ -54,7 +54,7 @@ pipeline{
 
     post{
         always {
-            sh 'docker-compose down --remove-orphans || true'
+            sh 'WORKSPACE_PATH="${WORKSPACE}" docker-compose down --remove-orphans || true'
     }
     success {
         echo 'Todas las pruebas se ejecutaron correctamente.'
