@@ -5,7 +5,17 @@ pipeline{
 
         stage('Clean up previous containers') {
             steps {
-                sh 'docker-compose down --remove-orphans || true'
+                sh '''
+                    docker rm -f api-test-coffee-app || true
+                    docker rm -f jmeter-test-coffee-app || true
+                    docker rm -f zap-test-coffee-app || true
+                    docker rm -f cypress-test-coffee-app || true
+                    
+                    docker rm -f $(docker ps -a -q --filter "name=coffee") || true
+                    docker network prune -f || true
+                    
+                    docker-compose down --remove-orphans || true
+                '''
             }
         }
 
