@@ -20,6 +20,17 @@ pipeline{
                 '''
             }
         }
+        stage('Debug paths'){
+            steps{
+                sh '''
+                    pwd
+                    ls
+                    ls api-testing
+                    ls api-testing/postman
+                    ls api-testing/postman/enviroment
+                '''
+            }
+        }
 
 
         stage('Ejecutar pruebas'){
