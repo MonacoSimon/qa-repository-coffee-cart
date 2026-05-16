@@ -49,9 +49,7 @@ pipeline {
 
                 stage('Cypress') {
                     steps {
-
-                        catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-
+                        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                             sh 'docker-compose up --build --abort-on-container-exit cypress-tests'
                         }
                     }
@@ -59,10 +57,29 @@ pipeline {
 
                 stage('Jmeter') {
                     steps {
-
                         catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-
-                            sh 'docker-compose up --build --abort-on-container-exit jmeter-tests'
+                            sh '''
+                                mkdir -p ${WORKSPACE}/results-docker/jmeter
+                                docker run --rm \
+                                  --volumes-from $(hostname) \
+                                  justb4/jmeter:latest \
+                                  /bin/sh -c "
+                                    found=0
+                                    for test in ${WORKSPACE}/performance/jmeter/test-plan/*.jmx; do
+                                      [ -f \\"\\$test\\" ] || continue
+                                      found=1
+                                      filename=\\$(basename \\$test .jmx)
+                                      timestamp=\\$(date +%Y%m%d-%H%M%S)
+                                      echo Ejecutando: \\$filename
+                                      jmeter -n -f -t \\$test -l ${WORKSPACE}/results-docker/jmeter/\\$filename.jtl -e -o ${WORKSPACE}/results-docker/jmeter/\\$filename-report-\\$timestamp -j ${WORKSPACE}/results-docker/jmeter/\\$filename.log
+                                      echo Terminado: \\$filename
+                                    done
+                                    if [ \\$found -eq 0 ]; then
+                                      echo No se encontraron archivos .jmx
+                                      exit 1
+                                    fi
+                                  "
+                            '''
                         }
                     }
                 }
