@@ -5,6 +5,8 @@ services:
 
     volumes:
       - ./api-testing/postman:/etc/newman
+      - ./api-testing/postman/collections:/etc/newman/collections:ro
+      - ./api-testing/postman/enviroment/environment-coffee-cart.postman_environment.json:/etc/newman/enviroment/environment-coffee-cart.postman_environment.json:ro
       - ./results-docker/newman:/etc/newman/results
 
     command: >
