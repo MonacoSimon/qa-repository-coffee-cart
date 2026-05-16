@@ -4,11 +4,11 @@ services:
     container_name: api-test-coffee-app
 
     volumes:
-      - ./api-testing/postman/collections:/etc/newman/collections
+      - ./api-testing/postman:/etc/newman
       - ./results-docker/newman:/etc/newman/results
 
     command: >
-      run /etc/newman/collections/api-testing-coffee-cart.postman_collection.json --env-var "urlBase=https://coffee-cart.app/" -r cli,json,junit --reporter-json-export /etc/newman/results/report.json --reporter-junit-export /etc/newman/results/report.xml
+      run /etc/newman/collections/api-testing-coffee-cart.postman_collection.json -e /etc/newman/enviroment/environment-coffee-cart.postman_environment.json --env-var "urlBase=https://coffee-cart.app/" -r cli,json,junit --reporter-json-export /etc/newman/results/report.json --reporter-junit-export /etc/newman/results/report.xml
 
     networks:
       - qa-network
