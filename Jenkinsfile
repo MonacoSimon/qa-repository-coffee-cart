@@ -29,6 +29,19 @@ pipeline {
 
             stages {
 
+                stage('Debug Newman') {
+                   steps {
+                       sh '''
+                           echo "=== Contenido del workspace ==="
+                           ls -la ${WORKSPACE}/api-testing/postman/collections/
+                           echo "=== Hostname ==="
+                           hostname
+                           echo "=== Quien soy ==="
+                           whoami
+                       '''
+                   }
+                }               
+
                 stage('API Tests Newman') {
                     steps {
                         catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
