@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        COMPOSE_FILE = "${WORKSPACE}/docker-compose.yml"
+    }
+
     stages {
 
         stage('Clean up previous containers') {
@@ -27,20 +31,16 @@ pipeline {
 
                 stage('API Tests Newman') {
                     steps {
-
                         catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-
                             sh '''
                                 set -e
-
-                                BASE_DIR=$(pwd)
-
+                
+                                BASE_DIR="${WORKSPACE}"
                                 RESULTS_DIR="$BASE_DIR/results-docker/newman"
-
                                 mkdir -p "$RESULTS_DIR"
-
+                
                                 echo "Ejecutando Newman con Docker..."
-
+                
                                 docker run --rm -t \
                                 -v "$BASE_DIR/api-testing/postman":/etc/newman \
                                 -v "$RESULTS_DIR":/results \
@@ -51,7 +51,7 @@ pipeline {
                                 -r cli,json,junit \
                                 --reporter-json-export /results/report.json \
                                 --reporter-junit-export /results/report.xml
-
+                
                                 echo "Ejecución finalizada"
                             '''
                         }

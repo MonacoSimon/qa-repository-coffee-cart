@@ -42,15 +42,26 @@ services:
     volumes:
       - ./performance/jmeter/test-plan:/tests
       - ./results-docker/jmeter:/results
-    entrypoint: >
-      sh -c "for test in /tests/*.jmx; do
-        filename=$$(basename $$test .jmx);
-        timestamp=$$(date +%Y%m%d-%H%M%S);
-        echo Ejecutando: $$filename;
-        jmeter -n -f -t $$test -l /results/$$filename.jtl -e -o /results/$$filename-report-$$timestamp -j /results/$$filename.log;
-        echo ✔ Terminado: $$filename;
-        echo -----------------------------;
-      done"
+    entrypoint: [ "/bin/sh", "-c" ]
+    command:
+      - |
+        set -e
+        found=0
+        for test in /tests/*.jmx; do
+          [ -f "$$test" ] || continue
+          found=1
+          filename=$$(basename $$test .jmx)
+          timestamp=$$(date +%Y%m%d-%H%M%S)
+          echo "Ejecutando: $$filename"
+          jmeter -n -f -t $$test -l /results/$$filename.jtl -e -o /results/$$filename-report-$$timestamp -j /results/$$filename.log
+          echo "✔ Terminado: $$filename"
+          echo "-----------------------------"
+        done
+        if [ $$found -eq 0 ]; then
+          echo "No se encontraron archivos .jmx en /tests"
+          exit 1
+        fi------------------------;
+        done"
     networks:
       - qa-network
 
