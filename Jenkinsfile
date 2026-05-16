@@ -56,9 +56,7 @@ pipeline{
         always {
             sh 'docker-compose down --remove-orphans || true'
         }
-        failure{
-            explainError()
-        }
+
     success {
         echo 'Todas las pruebas se ejecutaron correctamente.'
         archiveArtifacts artifacts: 'results-docker/**', allowEmptyArchive: true
