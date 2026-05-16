@@ -62,8 +62,9 @@ pipeline {
                                 mkdir -p ${WORKSPACE}/results-docker/jmeter
                                 docker run --rm \
                                   --volumes-from $(hostname) \
+                                  --entrypoint /bin/sh \
                                   justb4/jmeter:latest \
-                                  /bin/sh -c "
+                                  -c "
                                     found=0
                                     for test in ${WORKSPACE}/performance/jmeter/test-plan/*.jmx; do
                                       [ -f \\"\\$test\\" ] || continue
