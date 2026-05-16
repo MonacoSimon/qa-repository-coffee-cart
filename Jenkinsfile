@@ -40,7 +40,7 @@ pipeline{
                         echo "Ejecutando Newman con Docker..."
 
                         docker run --rm -t \
-                        -v "$BASE_DIR/postman":/etc/newman \
+                        -v "$BASE_DIR/api-testing/postman":/etc/newman \
                         -v "$RESULTS_DIR":/results \
                         postman/newman:alpine \
                         run /etc/newman/collections/api-testing-coffee-cart.postman_collection.json \
