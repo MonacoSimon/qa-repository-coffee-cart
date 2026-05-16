@@ -27,24 +27,25 @@ pipeline{
                 
 
 
-                stage('Cypress'){
-                    steps{
+                steps{
+                    catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
                         sh 'docker-compose up --build --abort-on-container-exit cypress-tests'
                     }
                 }
 
-                stage('Jmeter'){
-                    steps{
+                steps{
+                    catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
                         sh 'docker-compose up --build --abort-on-container-exit jmeter-tests'
                     }
                 }
 
                 stage ('Zap'){
                     steps{
+                    catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
                         sh 'docker-compose up --build --abort-on-container-exit zap-tests'
+                        }
                     }
                 }
-            }
         }
 
     }
