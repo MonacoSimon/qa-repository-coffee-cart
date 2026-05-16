@@ -29,23 +29,20 @@ pipeline {
 
             stages {
 
-                stage('Debug Newman') {
-                   steps {
-                       sh '''
-                           echo "=== Contenido del workspace ==="
-                           ls -la ${WORKSPACE}/api-testing/postman/collections/
-                           echo "=== Hostname ==="
-                           hostname
-                           echo "=== Quien soy ==="
-                           whoami
-                       '''
-                   }
-                }               
-
                 stage('API Tests Newman') {
                     steps {
                         catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-                            sh 'docker-compose up --abort-on-container-exit api-tests'
+                            sh '''
+                                docker run --rm \
+                                  --volumes-from $(hostname) \
+                                  postman/newman:alpine \
+                                  run ${WORKSPACE}/api-testing/postman/collections/api-testing-coffee-cart.postman_collection.json \
+                                  -e ${WORKSPACE}/api-testing/postman/enviroment/environment-coffee-cart.postman_environment.json \
+                                  --env-var "urlBase=https://coffee-cart.app/" \
+                                  -r cli,json,junit \
+                                  --reporter-json-export ${WORKSPACE}/results-docker/newman/report.json \
+                                  --reporter-junit-export ${WORKSPACE}/results-docker/newman/report.xml
+                            '''
                         }
                     }
                 }
