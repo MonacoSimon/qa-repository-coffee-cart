@@ -1,55 +1,3 @@
-Started by user simon monaco
-Obtained Jenkinsfile from git https://github.com/MonacoSimon/qa-repository-coffee-cart.git
-[Pipeline] Start of Pipeline
-[Pipeline] node
-Running on Jenkins in /var/jenkins_home/workspace/pipeline-coffee-cart
-[Pipeline] {
-[Pipeline] stage
-[Pipeline] { (Declarative: Checkout SCM)
-[Pipeline] checkout
-Selected Git installation does not exist. Using Default
-The recommended git tool is: NONE
-No credentials specified
- > git rev-parse --resolve-git-dir /var/jenkins_home/workspace/pipeline-coffee-cart/.git # timeout=10
-Fetching changes from the remote Git repository
- > git config remote.origin.url https://github.com/MonacoSimon/qa-repository-coffee-cart.git # timeout=10
-Fetching upstream changes from https://github.com/MonacoSimon/qa-repository-coffee-cart.git
- > git --version # timeout=10
- > git --version # 'git version 2.47.3'
- > git fetch --tags --force --progress -- https://github.com/MonacoSimon/qa-repository-coffee-cart.git +refs/heads/*:refs/remotes/origin/* # timeout=10
- > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
-Checking out Revision 12f1c49dac8aefc562e535994ff156c89d5f14b7 (refs/remotes/origin/main)
- > git config core.sparsecheckout # timeout=10
- > git checkout -f 12f1c49dac8aefc562e535994ff156c89d5f14b7 # timeout=10
-Commit message: "cambio rutas en jenkinsfile"
- > git rev-list --no-walk ec27abdf50bd456653f2214345345b57751b9c17 # timeout=10
-[Pipeline] }
-[Pipeline] // stage
-[Pipeline] withEnv
-[Pipeline] {
-[Pipeline] withEnv
-[Pipeline] {
-[Pipeline] stage
-[Pipeline] { (Clean up previous containers)
-[Pipeline] sh
-+ docker rm -f api-test-coffee-app
-+ docker rm -f jmeter-test-coffee-app
-+ docker rm -f zap-test-coffee-app
-+ docker rm -f cypress-test-coffee-app
-+ docker ps -a --filter name=coffee -q
-+ xargs -r docker rm -f
-+ docker network rm pipeline-coffee-cart_qa-network
-+ true
-+ docker network prune -f
-+ docker-compose down -v --remove-orphans
-[Pipeline] }
-[Pipeline] // stage
-[Pipeline] stage
-[Pipeline] { (Ejecutar pruebas)
-[Pipeline] stage
-[Pipeline] { (API Tests Newman)
-[Pipeline] catchError
-[Pipeline] {
 [Pipeline] sh
 + hostname
 + docker run --rm --volumes-from 181c4e6d445a postman/newman:alpine run /var/jenkins_home/workspace/pipeline-coffee-cart/api-testing/postman/collections/api-testing-coffee-cart.postman_collection.json -e /var/jenkins_home/workspace/pipeline-coffee-cart/api-testing/postman/enviroment/environment-coffee-cart.postman_environment.json --env-var urlBase=https://coffee-cart.app/ -r cli,json,junit --reporter-json-export /var/jenkins_home/workspace/pipeline-coffee-cart/results-docker/newman/report.json --reporter-junit-export /var/jenkins_home/workspace/pipeline-coffee-cart/results-docker/newman/report.xml
@@ -59,7 +7,7 @@ api-testing-coffee-cart
 
 ❏ collection-of-gets
 ↳ get-index
-  GET https://coffee-cart.app/ [200 OK, 1.33kB, 249ms]
+  GET https://coffee-cart.app/ [200 OK, 1.33kB, 591ms]
   ✓  Es HTML
   ✓  Contiene formulario de reset
   ✓  La respuesta contiene contenido esperado
@@ -67,7 +15,7 @@ api-testing-coffee-cart
   ✓  La respuesta no está vacía
 
 ↳ cart
-  GET https://coffee-cart.app/cart [200 OK, 1.33kB, 58ms]
+  GET https://coffee-cart.app/cart [200 OK, 1.33kB, 56ms]
   ✓  Es HTML
   ✓  Contiene formulario de reset
   ✓  La respuesta contiene contenido esperado
@@ -75,7 +23,7 @@ api-testing-coffee-cart
   ✓  La respuesta no está vacía
 
 ↳ github
-  GET https://coffee-cart.app/github [200 OK, 1.33kB, 52ms]
+  GET https://coffee-cart.app/github [200 OK, 1.33kB, 58ms]
   ✓  Es HTML
   ✓  Contiene formulario de reset
   ✓  La respuesta contiene contenido esperado
@@ -83,7 +31,7 @@ api-testing-coffee-cart
   ✓  La respuesta no está vacía
 
 ↳ breake-cart
-  GET https://coffee-cart.app/?breakable=1 [200 OK, 1.33kB, 49ms]
+  GET https://coffee-cart.app/?breakable=1 [200 OK, 1.33kB, 57ms]
   ✓  Es HTML
   ✓  Contiene formulario de reset
   ✓  La respuesta contiene contenido esperado
@@ -91,32 +39,32 @@ api-testing-coffee-cart
   ✓  La respuesta no está vacía
 
 ↳ app-with-adds
-  GET https://coffee-cart.app/?ad=1 [200 OK, 1.33kB, 48ms]
+  GET https://coffee-cart.app/?ad=1 [200 OK, 1.33kB, 52ms]
   ✓  Es HTML
   ✓  Contiene formulario de reset
   ✓  La respuesta contiene contenido esperado
   ✓  Tiempo de respuesta aceptable
   ✓  La respuesta no está vacía
 
-┌─────────────────────────┬───────────────────┬───────────────────┐
-│                         │          executed │            failed │
-├─────────────────────────┼───────────────────┼───────────────────┤
-│              iterations │                 1 │                 0 │
-├─────────────────────────┼───────────────────┼───────────────────┤
-│                requests │                 5 │                 0 │
-├─────────────────────────┼───────────────────┼───────────────────┤
-│            test-scripts │                 5 │                 0 │
-├─────────────────────────┼───────────────────┼───────────────────┤
-│      prerequest-scripts │                 0 │                 0 │
-├─────────────────────────┼───────────────────┼───────────────────┤
-│              assertions │                25 │                 0 │
-├─────────────────────────┴───────────────────┴───────────────────┤
-│ total run duration: 684ms                                       │
-├─────────────────────────────────────────────────────────────────┤
-│ total data received: 4.69kB (approx)                            │
-├─────────────────────────────────────────────────────────────────┤
-│ average response time: 91ms [min: 48ms, max: 249ms, s.d.: 78ms] │
-└─────────────────────────────────────────────────────────────────┘
+┌─────────────────────────┬────────────────────┬────────────────────┐
+│                         │           executed │             failed │
+├─────────────────────────┼────────────────────┼────────────────────┤
+│              iterations │                  1 │                  0 │
+├─────────────────────────┼────────────────────┼────────────────────┤
+│                requests │                  5 │                  0 │
+├─────────────────────────┼────────────────────┼────────────────────┤
+│            test-scripts │                  5 │                  0 │
+├─────────────────────────┼────────────────────┼────────────────────┤
+│      prerequest-scripts │                  0 │                  0 │
+├─────────────────────────┼────────────────────┼────────────────────┤
+│              assertions │                 25 │                  0 │
+├─────────────────────────┴────────────────────┴────────────────────┤
+│ total run duration: 1017ms                                        │
+├───────────────────────────────────────────────────────────────────┤
+│ total data received: 4.69kB (approx)                              │
+├───────────────────────────────────────────────────────────────────┤
+│ average response time: 162ms [min: 52ms, max: 591ms, s.d.: 214ms] │
+└───────────────────────────────────────────────────────────────────┘
 [Pipeline] }
 [Pipeline] // catchError
 [Pipeline] }
@@ -147,10 +95,10 @@ api-testing-coffee-cart
 #5 transferring context: 1.24kB done
 #5 DONE 0.0s
 
-#6 [cypress-tests 2/5] WORKDIR /e2e
+#6 [cypress-tests 4/5] RUN npm ci
 #6 CACHED
 
-#7 [cypress-tests 4/5] RUN npm ci
+#7 [cypress-tests 2/5] WORKDIR /e2e
 #7 CACHED
 
 #8 [cypress-tests 3/5] COPY cypress/package*.json ./
@@ -173,8 +121,51 @@ api-testing-coffee-cart
 Attaching to cypress-test-coffee-app
 [2Kcypress-test-coffee-app  | ❯  Verifying Cypress can run /root/.cache/Cypress/15.15.0/Cypress
 [2Kcypress-test-coffee-app  | ✔  Verified Cypress!       /root/.cache/Cypress/15.15.0/Cypress
-
-
+[2Kcypress-test-coffee-app  | [35mThe [33mvideoUploadOnPasses[39m[35m configuration option was removed in Cypress version 13.0.0.[39m
+[2Kcypress-test-coffee-app  | [35m[39m
+[2Kcypress-test-coffee-app  | [35mYou can safely remove this option from your config.[39m
+[2Kcypress-test-coffee-app  | [35m[39m
+[2Kcypress-test-coffee-app  | [35mhttps://on.cypress.io/migration-guide[39m
+[2Kcypress-test-coffee-app  | 
+[2Kcypress-test-coffee-app  | [90m====================================================================================================[39m
+[2Kcypress-test-coffee-app  | 
+[2Kcypress-test-coffee-app  | [0m  ([4m[1mRun Starting[22m[24m)[0m
+                                                                      [90m│[39m
+[2Kcypress-test-coffee-app  | [90m  │[39m [90mBrowser:[39m        Electron 138 [90m(headless)[39m                                                        [90m│[39m
+[2Kcypress-test-coffee-app  | [90m  │[39m [90mNode Version:[39m   [0mv24.15.0 [90m(/usr/local/bin/node)[39m[0m                                                 [90m│[39m
+[2Kcypress-test-coffee-app  | [90m  │[39m [90mSpecs:[39m          [0m12 found (accesibility-with-axe.cy.js, add-advertising.cy.js, add-multiple-pro[0m [90m│[39m
+[2Kcypress-test-coffee-app  | [90m  │[39m                 [0mducts-to-cart.cy.js, add-product-cart.cy.js, button-add-to-cart.cy.js, change-[0m [90m│[39m
+[2Kcypress-test-coffee-app  | [90m  │[39m                 [0mcaffee-title.cy.js, get-a-discount.cy.js, index.cy.js, pay-for-a-product.cy.js[0m [90m│[39m
+[2Kcypress-test-coffee-app  | [90m  │[39m                 [0m, pay-hover.cy.js, remo...)[0m                                                    [90m│[39m
+[2Kcypress-test-coffee-app  | [90m  │[39m [90mSearched:[39m       [0mcypress**/*.cy.{js,jsx,ts,tsx}[0m                                                 [90m│[39m
+[2Kcypress-test-coffee-app  |                                                                                                     
+[2Kcypress-test-coffee-app  |   Running:  [90maccesibility-with-axe.cy.js[39m                                                    [90m(1 of 12)[39m
+[2Kcypress-test-coffee-app  | 
+[2Kcypress-test-coffee-app  | [0m[0m
+[2Kcypress-test-coffee-app  | [0m  Accesibilidad - Home[0m
+[2Kcypress-test-coffee-app  |   [31m  1) no debería tener errores críticos[0m
+[2Kcypress-test-coffee-app  | 
+[2Kcypress-test-coffee-app  | 
+[2Kcypress-test-coffee-app  | [92m [0m[32m 0 passing[0m[90m (5s)[0m
+[2Kcypress-test-coffee-app  | [31m  1 failing[0m
+[2Kcypress-test-coffee-app  | 
+[2Kcypress-test-coffee-app  | [0m  1) Accesibilidad - Home
+[2Kcypress-test-coffee-app  |        no debería tener errores críticos:
+[2Kcypress-test-coffee-app  | [0m[31m     AssertionError: 1 accessibility violation was detected: expected 1 to equal 0[0m[90m
+[2Kcypress-test-coffee-app  |       at Context.eval (webpack://cypress/./node_modules/cypress-axe/dist/index.js:102:0)
+[2Kcypress-test-coffee-app  |       at getRet (https://coffee-cart.app/__cypress/runner/cypress_runner.js:122945:20)
+[2Kcypress-test-coffee-app  |       at tryCatcher (https://coffee-cart.app/__cypress/runner/cypress_runner.js:1777:23)
+[2Kcypress-test-coffee-app  |       at Promise.attempt.Promise.try (https://coffee-cart.app/__cypress/runner/cypress_runner.js:4285:29)
+[2Kcypress-test-coffee-app  |       at Context.thenFn (https://coffee-cart.app/__cypress/runner/cypress_runner.js:122956:66)
+[2Kcypress-test-coffee-app  |       at Context.then (https://coffee-cart.app/__cypress/runner/cypress_runner.js:123207:21)
+[2Kcypress-test-coffee-app  |       at wrapped (https://coffee-cart.app/__cypress/runner/cypress_runner.js:146488:19)
+[2Kcypress-test-coffee-app  | [0m
+[2Kcypress-test-coffee-app  | 
+[2Kcypress-test-coffee-app  | 
+[2Kcypress-test-coffee-app  | 
+[2Kcypress-test-coffee-app  | [31m  ([4m[1mResults[22m[24m)[39m
+[2Kcypress-test-coffee-app  | 
+[2Kcypress-test-coffee-app  | [90m----------------------------------------------------------------------------------------------------[39m
 [2Kcypress-test-coffee-app  | 
 [2Kcypress-test-coffee-app  |   Debug faster with full visibility.
 [2Kcypress-test-coffee-app  | 
@@ -217,55 +208,55 @@ ERROR: script returned exit code 1
                                     fi
                                   
 Ejecutando: Test-Plan-100-users
-May 16, 2026 8:34:42 PM java.util.prefs.FileSystemPreferences$1 run
+May 20, 2026 12:42:39 AM java.util.prefs.FileSystemPreferences$1 run
 INFO: Created user preferences directory.
 Creating summariser <summary>
 Created the tree successfully using /var/jenkins_home/workspace/pipeline-coffee-cart/performance/jmeter/test-plan/Test-Plan-100-users.jmx
-Starting standalone test @ May 16, 2026 8:34:43 PM CEST (1778956483832)
+Starting standalone test @ May 20, 2026 12:42:40 AM CEST (1779230560743)
 Waiting for possible Shutdown/StopTestNow/HeapDump/ThreadDump message on port 4445
-summary +     51 in 00:00:16 =    3.2/s Avg:   181 Min:    43 Max:  1314 Err:     0 (0.00%) Active: 3 Started: 27 Finished: 24
-summary +     95 in 00:00:30 =    3.2/s Avg:   112 Min:    41 Max:   201 Err:     0 (0.00%) Active: 6 Started: 77 Finished: 71
-summary =    146 in 00:00:46 =    3.2/s Avg:   136 Min:    41 Max:  1314 Err:     0 (0.00%)
-summary +     54 in 00:00:17 =    3.1/s Avg:   105 Min:    42 Max:   188 Err:     0 (0.00%) Active: 0 Started: 100 Finished: 100
-summary =    200 in 00:01:03 =    3.2/s Avg:   127 Min:    41 Max:  1314 Err:     0 (0.00%)
-Tidying up ...    @ May 16, 2026 8:35:47 PM CEST (1778956547407)
+summary +     60 in 00:00:19 =    3.1/s Avg:   119 Min:    43 Max:   632 Err:     0 (0.00%) Active: 3 Started: 32 Finished: 29
+summary +     97 in 00:00:30 =    3.3/s Avg:   120 Min:    42 Max:   916 Err:     0 (0.00%) Active: 5 Started: 82 Finished: 77
+summary =    157 in 00:00:49 =    3.2/s Avg:   120 Min:    42 Max:   916 Err:     0 (0.00%)
+summary +     43 in 00:00:13 =    3.3/s Avg:   110 Min:    43 Max:   187 Err:     0 (0.00%) Active: 0 Started: 100 Finished: 100
+summary =    200 in 00:01:02 =    3.2/s Avg:   118 Min:    42 Max:   916 Err:     0 (0.00%)
+Tidying up ...    @ May 20, 2026 12:43:42 AM CEST (1779230622955)
 ... end of run
 Terminado: Test-Plan-100-users
 Ejecutando: Test-Plan-20-users
 Creating summariser <summary>
 Created the tree successfully using /var/jenkins_home/workspace/pipeline-coffee-cart/performance/jmeter/test-plan/Test-Plan-20-users.jmx
-Starting standalone test @ May 16, 2026 8:35:51 PM CEST (1778956551923)
+Starting standalone test @ May 20, 2026 12:43:46 AM CEST (1779230626359)
 Waiting for possible Shutdown/StopTestNow/HeapDump/ThreadDump message on port 4445
-summary +     15 in 00:00:08 =    2.0/s Avg:   152 Min:    42 Max:   736 Err:     0 (0.00%) Active: 1 Started: 8 Finished: 7
-summary +     25 in 00:00:15 =    1.7/s Avg:   108 Min:    44 Max:   185 Err:     0 (0.00%) Active: 0 Started: 20 Finished: 20
-summary =     40 in 00:00:22 =    1.8/s Avg:   124 Min:    42 Max:   736 Err:     0 (0.00%)
-Tidying up ...    @ May 16, 2026 8:36:14 PM CEST (1778956574703)
+summary +     25 in 00:00:14 =    1.8/s Avg:   132 Min:    43 Max:   583 Err:     0 (0.00%) Active: 3 Started: 14 Finished: 11
+summary +     15 in 00:00:07 =    2.3/s Avg:   105 Min:    39 Max:   181 Err:     0 (0.00%) Active: 0 Started: 20 Finished: 20
+summary =     40 in 00:00:20 =    2.0/s Avg:   122 Min:    39 Max:   583 Err:     0 (0.00%)
+Tidying up ...    @ May 20, 2026 12:44:07 AM CEST (1779230647182)
 ... end of run
 Terminado: Test-Plan-20-users
 Ejecutando: Test-Plan-50-users
 Creating summariser <summary>
 Created the tree successfully using /var/jenkins_home/workspace/pipeline-coffee-cart/performance/jmeter/test-plan/Test-Plan-50-users.jmx
-Starting standalone test @ May 16, 2026 8:36:18 PM CEST (1778956578935)
+Starting standalone test @ May 20, 2026 12:44:10 AM CEST (1779230650595)
 Waiting for possible Shutdown/StopTestNow/HeapDump/ThreadDump message on port 4445
-summary +     21 in 00:00:11 =    1.9/s Avg:   146 Min:    42 Max:   735 Err:     0 (0.00%) Active: 2 Started: 11 Finished: 9
-summary +     60 in 00:00:30 =    2.0/s Avg:   111 Min:    42 Max:   199 Err:     0 (0.00%) Active: 3 Started: 42 Finished: 39
-summary =     81 in 00:00:41 =    2.0/s Avg:   120 Min:    42 Max:   735 Err:     0 (0.00%)
-summary +     19 in 00:00:10 =    1.8/s Avg:   108 Min:    46 Max:   178 Err:     0 (0.00%) Active: 0 Started: 50 Finished: 50
-summary =    100 in 00:00:52 =    1.9/s Avg:   118 Min:    42 Max:   735 Err:     0 (0.00%)
-Tidying up ...    @ May 16, 2026 8:37:10 PM CEST (1778956630967)
+summary +     37 in 00:00:19 =    1.9/s Avg:   123 Min:    41 Max:   511 Err:     0 (0.00%) Active: 2 Started: 20 Finished: 18
+summary +     59 in 00:00:31 =    1.9/s Avg:   113 Min:    41 Max:   199 Err:     0 (0.00%) Active: 3 Started: 50 Finished: 47
+summary =     96 in 00:00:50 =    1.9/s Avg:   117 Min:    41 Max:   511 Err:     0 (0.00%)
+summary +      4 in 00:00:02 =    2.2/s Avg:    85 Min:    49 Max:   184 Err:     0 (0.00%) Active: 0 Started: 50 Finished: 50
+summary =    100 in 00:00:52 =    1.9/s Avg:   115 Min:    41 Max:   511 Err:     0 (0.00%)
+Tidying up ...    @ May 20, 2026 12:45:02 AM CEST (1779230702752)
 ... end of run
 Terminado: Test-Plan-50-users
 Ejecutando: Test-Plan-80-users
 Creating summariser <summary>
 Created the tree successfully using /var/jenkins_home/workspace/pipeline-coffee-cart/performance/jmeter/test-plan/Test-Plan-80-users.jmx
-Starting standalone test @ May 16, 2026 8:37:15 PM CEST (1778956635443)
+Starting standalone test @ May 20, 2026 12:45:05 AM CEST (1779230705661)
 Waiting for possible Shutdown/StopTestNow/HeapDump/ThreadDump message on port 4445
-summary +     39 in 00:00:15 =    2.7/s Avg:   133 Min:    42 Max:   847 Err:     0 (0.00%) Active: 1 Started: 20 Finished: 19
-summary +     80 in 00:00:30 =    2.7/s Avg:   109 Min:    41 Max:   208 Err:     0 (0.00%) Active: 1 Started: 60 Finished: 59
-summary =    119 in 00:00:45 =    2.7/s Avg:   117 Min:    41 Max:   847 Err:     0 (0.00%)
-summary +     41 in 00:00:15 =    2.7/s Avg:   107 Min:    41 Max:   189 Err:     0 (0.00%) Active: 0 Started: 80 Finished: 80
-summary =    160 in 00:01:00 =    2.7/s Avg:   114 Min:    41 Max:   847 Err:     0 (0.00%)
-Tidying up ...    @ May 16, 2026 8:38:15 PM CEST (1778956695521)
+summary +     65 in 00:00:24 =    2.7/s Avg:   119 Min:    42 Max:   510 Err:     0 (0.00%) Active: 1 Started: 33 Finished: 32
+summary +     80 in 00:00:30 =    2.7/s Avg:   124 Min:    41 Max:  1180 Err:     0 (0.00%) Active: 1 Started: 73 Finished: 72
+summary =    145 in 00:00:54 =    2.7/s Avg:   121 Min:    41 Max:  1180 Err:     0 (0.00%)
+summary +     15 in 00:00:05 =    2.8/s Avg:   107 Min:    42 Max:   193 Err:     0 (0.00%) Active: 0 Started: 80 Finished: 80
+summary =    160 in 00:01:00 =    2.7/s Avg:   120 Min:    41 Max:  1180 Err:     0 (0.00%)
+Tidying up ...    @ May 20, 2026 12:46:05 AM CEST (1779230765530)
 ... end of run
 Terminado: Test-Plan-80-users
 [Pipeline] }
@@ -298,13 +289,13 @@ Terminado: Test-Plan-80-users
 #5 transferring context: 1.24kB done
 #5 DONE 0.0s
 
-#6 [cypress-tests 2/5] WORKDIR /e2e
+#6 [cypress-tests 4/5] RUN npm ci
 #6 CACHED
 
-#7 [cypress-tests 3/5] COPY cypress/package*.json ./
+#7 [cypress-tests 2/5] WORKDIR /e2e
 #7 CACHED
 
-#8 [cypress-tests 4/5] RUN npm ci
+#8 [cypress-tests 3/5] COPY cypress/package*.json ./
 #8 CACHED
 
 #9 [cypress-tests 5/5] COPY cypress/ ./
@@ -400,7 +391,7 @@ Attaching to zap-test-coffee-app
 [2Kzap-test-coffee-app  |       https://coffee-cart.app/?breakable=1 (200 OK)
 [2Kzap-test-coffee-app  |       https://coffee-cart.app/assets/index-b859522e.css (200 OK)
 [2Kzap-test-coffee-app  |       https://coffee-cart.app/favicon.ico (200 OK)
-[2Kzap-test-coffee-app  |       https://coffee-cart.app/robots.txt (200 OK)
+[2Kzap-test-coffee-app  |       https://coffee-cart.app/sitemap.xml (200 OK)
 [2Kzap-test-coffee-app  | WARN-NEW: Information Disclosure - Suspicious Comments [10027] x 5 
 [2Kzap-test-coffee-app  |       https://coffee-cart.app/assets/index-8bfa4912.js (200 OK)
 [2Kzap-test-coffee-app  |       https://coffee-cart.app/assets/index-8bfa4912.js (200 OK)
@@ -418,13 +409,13 @@ Attaching to zap-test-coffee-app
 [2Kzap-test-coffee-app  |       https://coffee-cart.app/?breakable=1 (200 OK)
 [2Kzap-test-coffee-app  |       https://coffee-cart.app/assets/index-b859522e.css (200 OK)
 [2Kzap-test-coffee-app  |       https://coffee-cart.app/favicon.ico (200 OK)
-[2Kzap-test-coffee-app  |       https://coffee-cart.app/robots.txt (200 OK)
+[2Kzap-test-coffee-app  |       https://coffee-cart.app/sitemap.xml (200 OK)
 [2Kzap-test-coffee-app  | WARN-NEW: Retrieved from Cache [10050] x 5 
 [2Kzap-test-coffee-app  |       https://coffee-cart.app/ (200 OK)
-[2Kzap-test-coffee-app  |       https://coffee-cart.app/?ad=1 (200 OK)
 [2Kzap-test-coffee-app  |       https://coffee-cart.app/?breakable=1 (200 OK)
 [2Kzap-test-coffee-app  |       https://coffee-cart.app/assets/index-b859522e.css (200 OK)
 [2Kzap-test-coffee-app  |       https://coffee-cart.app/favicon.ico (200 OK)
+[2Kzap-test-coffee-app  |       https://coffee-cart.app/sitemap.xml (200 OK)
 [2Kzap-test-coffee-app  | WARN-NEW: Permissions Policy Header Not Set [10063] x 5 
 [2Kzap-test-coffee-app  |       https://coffee-cart.app/ (200 OK)
 [2Kzap-test-coffee-app  |       https://coffee-cart.app/?ad=1 (200 OK)
@@ -441,14 +432,14 @@ Attaching to zap-test-coffee-app
 [2Kzap-test-coffee-app  |       https://coffee-cart.app/ (200 OK)
 [2Kzap-test-coffee-app  |       https://coffee-cart.app/ (200 OK)
 [2Kzap-test-coffee-app  |       https://coffee-cart.app/?breakable=1 (200 OK)
-[2Kzap-test-coffee-app  |       https://coffee-cart.app/?breakable=1 (200 OK)
-[2Kzap-test-coffee-app  |       https://coffee-cart.app/robots.txt (200 OK)
-[2Kzap-test-coffee-app  | WARN-NEW: Cross-Origin-Embedder-Policy Header Missing or Invalid [90004] x 15 
-[2Kzap-test-coffee-app  |       https://coffee-cart.app/ (200 OK)
-[2Kzap-test-coffee-app  |       https://coffee-cart.app/?ad=1 (200 OK)
-[2Kzap-test-coffee-app  |       https://coffee-cart.app/?breakable=1 (200 OK)
-[2Kzap-test-coffee-app  |       https://coffee-cart.app/robots.txt (200 OK)
 [2Kzap-test-coffee-app  |       https://coffee-cart.app/sitemap.xml (200 OK)
+[2Kzap-test-coffee-app  |       https://coffee-cart.app/sitemap.xml (200 OK)
+[2Kzap-test-coffee-app  | WARN-NEW: Cross-Origin-Embedder-Policy Header Missing or Invalid [90004] x 11 
+[2Kzap-test-coffee-app  |       https://coffee-cart.app/ (200 OK)
+[2Kzap-test-coffee-app  |       https://coffee-cart.app/?breakable=1 (200 OK)
+[2Kzap-test-coffee-app  |       https://coffee-cart.app/sitemap.xml (200 OK)
+[2Kzap-test-coffee-app  |       https://coffee-cart.app/ (200 OK)
+[2Kzap-test-coffee-app  |       https://coffee-cart.app/?breakable=1 (200 OK)
 [2Kzap-test-coffee-app  | FAIL-NEW: 0   FAIL-INPROG: 0  WARN-NEW: 12    WARN-INPROG: 0  INFO: 0 IGNORE: 0       PASS: 55
 zap-test-coffee-app exited with code 0
 Aborting on container exit...
@@ -458,12 +449,183 @@ Aborting on container exit...
 [Pipeline] // catchError
 [Pipeline] }
 [Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (LocalStack)
+[Pipeline] sh
++ docker compose -f cloud-testing/localstack/docker-compose.yml up -d
+ Container localstack-coffee-shop  Creating
+ Container localstack-coffee-shop  Created
+ Container localstack-coffee-shop  Starting
+ Container localstack-coffee-shop  Started
+[Pipeline] sh
++ sleep 15
+[Pipeline] sh
++ hostname
++ docker network connect localstack-network 181c4e6d445a
+Error response from daemon: endpoint with name jenkins already exists in network localstack-network
++ true
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Cloud Setup)
+[Pipeline] sh
++ apt-get install -y python3 python3-pip python3-venv zip
+Reading package lists...
+Building dependency tree...
+Reading state information...
+python3 is already the newest version (3.13.5-1).
+python3-pip is already the newest version (25.1.1+dfsg-1).
+python3-venv is already the newest version (3.13.5-1).
+zip is already the newest version (3.0-15).
+0 upgraded, 0 newly installed, 0 to remove and 21 not upgraded.
+[Pipeline] sh
++ chmod +x cloud-testing/aws/scripts/setup_all.sh
+[Pipeline] sh
++ docker inspect -f {{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}} localstack-coffee-shop
++ LOCALSTACK_IP=172.19.0.2
++ LOCALSTACK_URL=http://172.19.0.2:4566 bash cloud-testing/aws/scripts/setup_all.sh
+========================================
+  QA Cloud Setup — coffee-cart
+========================================
+
+Verificando LocalStack...
+LocalStack disponible
+Virtualenv activado
+Instalando dependencias Python...
+
+[1/4] Configurando S3...
+Iniciando proceso: creación de bucket, subida y verificación del archivo...
+Bucket "qa-s3-auto-bucket" creado exitosamente.
+Archivo "auto-test.txt" subido exitosamente al bucket "qa-s3-auto-bucket".
+Archivo "auto-test.txt" descargado correctamente y el contenido coincide.
+
+[2/4] Configurando SQS...
+==================================================
+  SQS Setup — qa-failures
+==================================================
+Cola creada: "qa-failures-dlq-coffee-cart"
+   URL: http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/qa-failures-dlq-coffee-cart
+   ARN DLQ: arn:aws:sqs:us-east-1:000000000000:qa-failures-dlq-coffee-cart
+
+Cola creada: "qa-failures-coffee-cart"
+   URL: http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/qa-failures-coffee-cart
+
+==================================================
+  Cola principal : qa-failures-coffee-cart
+  Dead Letter    : qa-failures-dlq-coffee-cart
+==================================================
+
+[3/4] Configurando DynamoDB...
+==================================================
+  DynamoDB Setup — qa_executions
+==================================================
+Tabla "qa_executions" creada exitosamente.
+   Estado: ACTIVE
+==================================================
+
+[4/4] Deployando Lambda...
+========================================
+  Deploy Lambda: qa-validate-results
+========================================
+Empaquetando handler...
+  adding: handler.py (deflated 67%)
+function.zip generado
+Deployando con Python/boto3...
+Lambda creada
+========================================
+  Deploy finalizado: qa-validate-results
+========================================
+
+========================================
+Setup completo
+
+  Servicios disponibles en http://172.19.0.2:4566:
+    S3        → qa-reports-coffee-cart
+    S3        → qa-s3-auto-bucket
+    SQS       → qa-failures-coffee-cart
+    DynamoDB  → qa_executions
+    Lambda    → qa-validate-results
+========================================
+[Pipeline] sh
++ apt-get install -y python3 python3-pip python3-venv zip awscli
+Reading package lists...
+Building dependency tree...
+Reading state information...
+python3 is already the newest version (3.13.5-1).
+python3-pip is already the newest version (25.1.1+dfsg-1).
+python3-venv is already the newest version (3.13.5-1).
+zip is already the newest version (3.0-15).
+awscli is already the newest version (2.23.6-1).
+0 upgraded, 0 newly installed, 0 to remove and 21 not upgraded.
+[Pipeline] }
+[Pipeline] // stage
 [Pipeline] }
 [Pipeline] // stage
 [Pipeline] stage
 [Pipeline] { (Declarative: Post Actions)
 [Pipeline] sh
-+ docker-compose down --remove-orphans
++ docker inspect -f {{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}} localstack-coffee-shop
++ LOCALSTACK_IP=172.19.0.2
++ [ -n 172.19.0.2 ]
++ export LOCALSTACK_URL=http://172.19.0.2:4566
++ echo Usando LocalStack en: http://172.19.0.2:4566
+Usando LocalStack en: http://172.19.0.2:4566
++ cloud-testing/venv/bin/python cloud-testing/aws/s3/upload_reports.py
+=======================================================
+  QA Reports Upload — coffee-cart
+  Fecha: 2026-05-19
+=======================================================
+Bucket "qa-reports-coffee-cart" creado exitosamente.
+
+Suite: CYPRESS (results-docker/cypress)
+Directorio no encontrado: results-docker/cypress
+   Subidos: 0 | Ignorados: 0
+
+Suite: NEWMAN (results-docker/newman)
+Subido: newman/2026-05-19/report.json
+   Subidos: 1 | Ignorados: 1
+
+Suite: JMETER (results-docker/jmeter)
+Subido: jmeter/2026-05-19/Test-Plan-20-users.jtl
+Subido: jmeter/2026-05-19/Test-Plan-100-users.jtl
+Subido: jmeter/2026-05-19/Test-Plan-50-users.jtl
+Subido: jmeter/2026-05-19/Test-Plan-80-users.jtl
+   Subidos: 4 | Ignorados: 51
+
+Suite: ZAP (results-docker/zap)
+Subido: zap/2026-05-19/report.html
+   Subidos: 1 | Ignorados: 1
+
+=======================================================
+  Total subidos : 6
+  Total ignorados: 53
+
+Contenido del bucket:
+jmeter/2026-05-19/Test-Plan-100-users.jtl (22.2 KB)
+jmeter/2026-05-19/Test-Plan-20-users.jtl (4.6 KB)
+jmeter/2026-05-19/Test-Plan-50-users.jtl (11.2 KB)
+jmeter/2026-05-19/Test-Plan-80-users.jtl (17.8 KB)
+newman/2026-05-19/report.json (125.0 KB)
+zap/2026-05-19/report.html (119.2 KB)
+=======================================================
++ cloud-testing/venv/bin/python cloud-testing/aws/sqs/poll_failures.py
+=======================================================
+  SQS Poll — Revisando fallos del pipeline
+=======================================================
+
+=======================================================
+Sin fallos en la cola — pipeline OK
+=======================================================
+[Pipeline] sh
++ docker compose -f cloud-testing/localstack/docker-compose.yml down
+ Container localstack-coffee-shop  Stopping
+ Container localstack-coffee-shop  Stopped
+ Container localstack-coffee-shop  Removing
+ Container localstack-coffee-shop  Removed
+ Network localstack-network  Removing
+ Network localstack-network  Resource is still in use
+[Pipeline] sh
++ docker compose down --remove-orphans
  Container zap-test-coffee-app  Stopping
  Container zap-test-coffee-app  Stopped
  Container zap-test-coffee-app  Removing
@@ -478,11 +640,6 @@ Aborting on container exit...
  Container api-test-coffee-app  Removed
  Network pipeline-coffee-cart_qa-network  Removing
  Network pipeline-coffee-cart_qa-network  Removed
-[Pipeline] archiveArtifacts
-Archiving artifacts
-[Pipeline] junit
-Recording test results
-[Checks API] No suitable checks publisher found.
 [Pipeline] echo
 Todas las pruebas se ejecutaron correctamente.
 [Pipeline] }
