@@ -2,6 +2,7 @@
 set -e
 
 LOCALSTACK_URL="${LOCALSTACK_URL:-http://localhost:4566}"
+AWS_CMD="$CLOUD_DIR/../venv/bin/aws"
 FUNCTION_NAME="qa-validate-results"
 HANDLER="handler.lambda_handler"
 RUNTIME="python3.12"
@@ -18,7 +19,7 @@ cd "$DIR"
 zip -j "$ZIP_FILE" handler.py
 echo "$ZIP_FILE generado"
 
-EXISTING=$(aws lambda get-function \
+EXISTING=$($AWS_CMD lambda get-function \
   --function-name "$FUNCTION_NAME" \
   --endpoint-url "$LOCALSTACK_URL" \
   --region us-east-1 \
@@ -26,7 +27,7 @@ EXISTING=$(aws lambda get-function \
 
 if echo "$EXISTING" | grep -q "NOT_FOUND"; then
   echo "Creando función Lambda..."
-  aws lambda create-function \
+  $AWS_CMD lambda create-function \
     --function-name "$FUNCTION_NAME" \
     --runtime "$RUNTIME" \
     --role "$ROLE" \
@@ -37,7 +38,7 @@ if echo "$EXISTING" | grep -q "NOT_FOUND"; then
   echo "Lambda creada"
 else
   echo "Actualizando función Lambda existente..."
-  aws lambda update-function-code \
+  $AWS_CMD lambda update-function-code \
     --function-name "$FUNCTION_NAME" \
     --zip-file "fileb://$ZIP_FILE" \
     --endpoint-url "$LOCALSTACK_URL" \
@@ -47,7 +48,7 @@ fi
 
 echo ""
 echo "Smoke test..."
-RESPONSE=$(aws lambda invoke \
+RESPONSE=$($AWS_CMD lambda invoke \
   --function-name "$FUNCTION_NAME" \
   --payload '{"suite":"newman","results":{"run":{"stats":{"assertions":{"failed":0}},"failures":[],"timings":{"responseAverage":300}}}}' \
   --endpoint-url "$LOCALSTACK_URL" \

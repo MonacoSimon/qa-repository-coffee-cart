@@ -123,16 +123,19 @@ pipeline {
 
         always {
 
-            sh 'docker-compose down --remove-orphans || true'
-
-            archiveArtifacts artifacts: 'results-docker/**', allowEmptyArchive: true
-
-            junit 'results-docker/**/*.xml'
-
-            sh 'cloud-testing/venv/bin/python cloud-testing/aws/s3/upload_reports.py'
-            sh 'cloud-testing/venv/bin/python cloud-testing/aws/sqs/poll_failures.py'
-            sh 'docker compose -f cloud-testing/localstack/docker-compose.yml down'
-            sh 'docker compose down --remove-orphans'
+            sh '''
+            LOCALSTACK_IP=$(docker inspect -f "{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}" localstack-coffee-shop 2>/dev/null || echo "")
+            if [ -n "$LOCALSTACK_IP" ]; then
+                export LOCALSTACK_URL="http://$LOCALSTACK_IP:4566"
+                echo "Usando LocalStack en: $LOCALSTACK_URL"
+                cloud-testing/venv/bin/python cloud-testing/aws/s3/upload_reports.py
+                cloud-testing/venv/bin/python cloud-testing/aws/sqs/poll_failures.py
+            else
+                echo "LocalStack no disponible, saltando cloud post-steps"
+            fi
+            '''
+            sh 'docker compose -f cloud-testing/localstack/docker-compose.yml down || true'
+            sh 'docker compose down --remove-orphans || true'
         }
 
         success {
