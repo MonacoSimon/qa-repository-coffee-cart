@@ -111,6 +111,7 @@ pipeline {
                                 LOCALSTACK_IP=$(docker inspect -f "{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}" localstack-coffee-shop)
                                 LOCALSTACK_URL="http://$LOCALSTACK_IP:4566" bash cloud-testing/aws/scripts/setup_all.sh
                             '''
+                            sh 'apt-get install -y python3 python3-pip python3-venv zip awscli 2>/dev/null || true'
                         }
                     }
 
