@@ -2,13 +2,13 @@
 set -e
 
 LOCALSTACK_URL="${LOCALSTACK_URL:-http://localhost:4566}"
-AWS_CMD="$CLOUD_DIR/../venv/bin/aws"
 FUNCTION_NAME="qa-validate-results"
 HANDLER="handler.lambda_handler"
 RUNTIME="python3.12"
 ROLE="arn:aws:iam::000000000000:role/lambda-role"
 ZIP_FILE="function.zip"
 DIR="$(cd "$(dirname "$0")" && pwd)"
+AWS_CMD="$(dirname "$CLOUD_DIR")/venv/bin/aws"
 
 echo "========================================"
 echo "  Deploy Lambda: $FUNCTION_NAME"

@@ -15,7 +15,7 @@ BUCKET_NAME = 'qa-reports-coffee-cart'
 DATE_PREFIX = datetime.now().strftime('%Y-%m-%d')
 
 REPORTS = {
-    'cypress': 'automation/cypress/results',          
+    'cypress': 'results-docker/cypress',          
     'newman': 'results-docker/newman',
     'jmeter': 'results-docker/jmeter',
     'zap': 'results-docker/zap',
@@ -45,7 +45,12 @@ def ensure_bucket_exists(bucket_name):
 
 def upload_report(local_path, s3_key):
     try:
-        s3_client.upload_file(local_path, BUCKET_NAME, s3_key)
+        with open(local_path, 'rb') as f:
+            s3_client.put_object(
+                Bucket=BUCKET_NAME,
+                Key=s3_key,
+                Body=f.read()
+            )
         print(f'Subido: {s3_key}')
         return True
     except botocore.exceptions.ClientError as e:
