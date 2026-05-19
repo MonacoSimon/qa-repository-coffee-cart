@@ -98,7 +98,8 @@ pipeline {
                 stage('LocalStack') {
                     steps {
                         sh 'docker compose -f cloud-testing/localstack/docker-compose.yml up -d'
-                        sh 'sleep 10'
+                        sh 'sleep 15'
+                        sh 'docker network connect localstack-network $(hostname) || true'
                     }
                 }
 
