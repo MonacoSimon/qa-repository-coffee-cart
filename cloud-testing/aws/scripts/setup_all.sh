@@ -24,10 +24,17 @@ until curl -s "$LOCALSTACK_URL/_localstack/health" | grep -q '"s3": "available"'
 done
 echo "LocalStack disponible"
 
-if [ -f "$CLOUD_DIR/../venv/bin/activate" ]; then
-    source "$CLOUD_DIR/../venv/bin/activate"
-    echo "Virtualenv activado"
+
+if [ ! -d "$CLOUD_DIR/../venv/bin" ]; then
+    echo "Creando virtualenv..."
+    python3 -m venv "$CLOUD_DIR/../venv"
 fi
+
+source "$CLOUD_DIR/../venv/bin/activate"
+echo "Virtualenv activado"
+
+echo "Instalando dependencias Python..."
+pip install --quiet boto3 botocore
 
 echo ""
 echo "[1/4] Configurando S3..."
