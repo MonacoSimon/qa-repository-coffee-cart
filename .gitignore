@@ -64,3 +64,14 @@ coverage/
 dist/
 build/
 security/docker-report/
+
+# =========================
+# Python
+# =========================
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.Python
+*.egg-info/
+.pytest_cache/
