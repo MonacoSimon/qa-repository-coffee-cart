@@ -97,7 +97,8 @@ pipeline {
 
                 stage('Cloud Setup') {
                     steps {
-                        sh 'bash cloud-testing/scripts/setup_all.sh'
+                        sh 'chmod +x cloud-testing/aws/scripts/setup_all.sh'
+                        sh 'bash cloud-testing/aws/scripts/setup_all.sh'
                     }
                 }
 
@@ -115,14 +116,14 @@ pipeline {
 
             junit 'results-docker/**/*.xml'
 
-            sh 'python cloud-testing/aws/s3/upload_reports.py'
+            sh 'python3 cloud-testing/aws/s3/upload_reports.py'
 
             sh """
-                python cloud-testing/aws/dynamodb/record_execution.py \
+                python3 cloud-testing/aws/dynamodb/record_execution.py \
                     cypress ${currentBuild.result} 0 0 0 ${BUILD_NUMBER}
 
             """
-            sh 'python cloud-testing/aws/sqs/poll_failures.py'
+            sh 'python3 cloud-testing/aws/sqs/poll_failures.py'
         }
 
         success {
