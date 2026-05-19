@@ -95,6 +95,22 @@ pipeline {
                     }
                 }
 
+                stage('activar entorno'){
+                    steps{
+                        sh '''
+                            cd cloud-testing
+                            source venv/bin/activate
+                        '''
+                    }
+                }
+
+                stage('LocalStack') {
+                    steps {
+                        sh 'docker compose -f cloud-testing/localstack/docker-compose.yml up -d'
+                        sh 'sleep 10'
+                    }
+                }
+
                 stage('Cloud Setup') {
                     steps {
                         sh 'chmod +x cloud-testing/aws/scripts/setup_all.sh'
@@ -116,13 +132,10 @@ pipeline {
 
             junit 'results-docker/**/*.xml'
 
-            sh '''
-                cd cloud-testing
-                source venv/bin/activate
-                python aws/s3/upload_reports.py
-                python aws/dynamodb/record_execution.py cypress ${currentBuild.result} 0 0 0 ${BUILD_NUMBER}
-                python aws/sqs/poll_failures.py
-            '''
+            sh 'cloud-testing/venv/bin/python cloud-testing/aws/s3/upload_reports.py'
+            sh 'cloud-testing/venv/bin/python cloud-testing/aws/sqs/poll_failures.py'
+            sh 'docker compose -f cloud-testing/localstack/docker-compose.yml down'
+            sh 'docker compose down --remove-orphans'
         }
 
         success {
