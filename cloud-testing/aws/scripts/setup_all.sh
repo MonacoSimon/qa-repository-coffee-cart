@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-LOCALSTACK_URL="http://localhost:4566"
+LOCALSTACK_URL="${LOCALSTACK_URL:-http://localhost:4566}"
 CLOUD_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 
 echo "========================================"

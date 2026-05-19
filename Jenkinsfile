@@ -97,18 +97,21 @@ pipeline {
 
                 stage('LocalStack') {
                     steps {
-                        sh 'docker compose -f cloud-testing/localstack/docker-compose.yml up -d'
-                        sh 'sleep 15'
-                        sh 'docker network connect localstack-network $(hostname) || true'
+                            sh 'docker compose -f cloud-testing/localstack/docker-compose.yml up -d'
+                            sh 'sleep 15'
+                            sh 'docker network connect localstack-network $(hostname) || true'
+                        }
                     }
-                }
 
-                stage('Cloud Setup') {
-                    steps {
-                        sh 'chmod +x cloud-testing/aws/scripts/setup_all.sh'
-                        sh 'bash cloud-testing/aws/scripts/setup_all.sh'
+                    stage('Cloud Setup') {
+                        steps {
+                            sh 'chmod +x cloud-testing/aws/scripts/setup_all.sh'
+                            sh '''
+                                LOCALSTACK_IP=$(docker inspect -f "{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}" localstack-coffee-shop)
+                                LOCALSTACK_URL="http://$LOCALSTACK_IP:4566" bash cloud-testing/aws/scripts/setup_all.sh
+                            '''
+                        }
                     }
-                }
 
             }
         }
