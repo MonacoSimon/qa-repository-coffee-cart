@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LOCALSTACK_URL="http://localhost:4566"
+LOCALSTACK_URL="${LOCALSTACK_URL:-http://localhost:4566}"
 CLOUD_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 AWS_CMD="aws --endpoint-url=$LOCALSTACK_URL --region us-east-1"
 
