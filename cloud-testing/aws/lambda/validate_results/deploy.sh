@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-LOCALSTACK_URL="http://localhost:4566"
+LOCALSTACK_URL="${LOCALSTACK_URL:-http://localhost:4566}"
 FUNCTION_NAME="qa-validate-results"
 HANDLER="handler.lambda_handler"
 RUNTIME="python3.12"
