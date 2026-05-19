@@ -116,14 +116,13 @@ pipeline {
 
             junit 'results-docker/**/*.xml'
 
-            sh 'python3 cloud-testing/aws/s3/upload_reports.py'
-
-            sh """
-                python3 cloud-testing/aws/dynamodb/record_execution.py \
-                    cypress ${currentBuild.result} 0 0 0 ${BUILD_NUMBER}
-
-            """
-            sh 'python3 cloud-testing/aws/sqs/poll_failures.py'
+            sh '''
+                cd cloud-testing
+                source venv/bin/activate
+                python aws/s3/upload_reports.py
+                python aws/dynamodb/record_execution.py cypress ${currentBuild.result} 0 0 0 ${BUILD_NUMBER}
+                python aws/sqs/poll_failures.py
+            '''
         }
 
         success {
