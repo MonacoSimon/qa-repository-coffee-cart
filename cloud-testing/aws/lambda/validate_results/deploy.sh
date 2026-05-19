@@ -3,12 +3,9 @@ set -e
 
 LOCALSTACK_URL="${LOCALSTACK_URL:-http://localhost:4566}"
 FUNCTION_NAME="qa-validate-results"
-HANDLER="handler.lambda_handler"
-RUNTIME="python3.12"
-ROLE="arn:aws:iam::000000000000:role/lambda-role"
-ZIP_FILE="function.zip"
 DIR="$(cd "$(dirname "$0")" && pwd)"
-AWS_CMD="$(dirname "$CLOUD_DIR")/venv/bin/aws"
+VENV_PYTHON="$(dirname "$(dirname "$(dirname "$DIR")")")/venv/bin/python"
+ZIP_FILE="$DIR/function.zip"
 
 echo "========================================"
 echo "  Deploy Lambda: $FUNCTION_NAME"
@@ -17,50 +14,40 @@ echo "========================================"
 echo "Empaquetando handler..."
 cd "$DIR"
 zip -j "$ZIP_FILE" handler.py
-echo "$ZIP_FILE generado"
+echo "function.zip generado"
 
-EXISTING=$($AWS_CMD lambda get-function \
-  --function-name "$FUNCTION_NAME" \
-  --endpoint-url "$LOCALSTACK_URL" \
-  --region us-east-1 \
-  --output text 2>/dev/null || echo "NOT_FOUND")
+echo "Deployando con Python/boto3..."
+"$VENV_PYTHON" - <<EOF
+import boto3, base64, os
 
-if echo "$EXISTING" | grep -q "NOT_FOUND"; then
-  echo "Creando función Lambda..."
-  $AWS_CMD lambda create-function \
-    --function-name "$FUNCTION_NAME" \
-    --runtime "$RUNTIME" \
-    --role "$ROLE" \
-    --handler "$HANDLER" \
-    --zip-file "fileb://$ZIP_FILE" \
-    --endpoint-url "$LOCALSTACK_URL" \
-    --region us-east-1
-  echo "Lambda creada"
-else
-  echo "Actualizando función Lambda existente..."
-  $AWS_CMD lambda update-function-code \
-    --function-name "$FUNCTION_NAME" \
-    --zip-file "fileb://$ZIP_FILE" \
-    --endpoint-url "$LOCALSTACK_URL" \
-    --region us-east-1
-  echo "Lambda actualizada"
-fi
+client = boto3.client(
+    'lambda',
+    endpoint_url='$LOCALSTACK_URL',
+    aws_access_key_id='test',
+    aws_secret_access_key='test',
+    region_name='us-east-1'
+)
 
-echo ""
-echo "Smoke test..."
-RESPONSE=$($AWS_CMD lambda invoke \
-  --function-name "$FUNCTION_NAME" \
-  --payload '{"suite":"newman","results":{"run":{"stats":{"assertions":{"failed":0}},"failures":[],"timings":{"responseAverage":300}}}}' \
-  --endpoint-url "$LOCALSTACK_URL" \
-  --region us-east-1 \
-  /tmp/lambda-smoke-response.json \
-  --output text)
+with open('$ZIP_FILE', 'rb') as f:
+    zip_bytes = f.read()
 
-cat /tmp/lambda-smoke-response.json
-echo ""
-echo "Smoke test completado"
+try:
+    client.get_function(FunctionName='$FUNCTION_NAME')
+    client.update_function_code(FunctionName='$FUNCTION_NAME', ZipFile=zip_bytes)
+    print('Lambda actualizada')
+except client.exceptions.ResourceNotFoundException:
+    client.create_function(
+        FunctionName='$FUNCTION_NAME',
+        Runtime='python3.12',
+        Role='arn:aws:iam::000000000000:role/lambda-role',
+        Handler='handler.lambda_handler',
+        Code={'ZipFile': zip_bytes}
+    )
+    print('Lambda creada')
+
+print('========================================')
+print(f'  Deploy finalizado: $FUNCTION_NAME')
+print('========================================')
+EOF
 
 rm -f "$ZIP_FILE"
-echo "========================================"
-echo "  Deploy finalizado: $FUNCTION_NAME"
-echo "========================================"
