@@ -94,6 +94,13 @@ pipeline {
                         }
                     }
                 }
+
+                stage('Cloud Setup') {
+                    steps {
+                        sh 'bash cloud-testing/scripts/setup_all.sh'
+                    }
+                }
+
             }
         }
     }
@@ -107,6 +114,15 @@ pipeline {
             archiveArtifacts artifacts: 'results-docker/**', allowEmptyArchive: true
 
             junit 'results-docker/**/*.xml'
+
+            sh 'python cloud-testing/aws/s3/upload_reports.py'
+
+            sh """
+                python cloud-testing/aws/dynamodb/record_execution.py \
+                    cypress ${currentBuild.result} 0 0 0 ${BUILD_NUMBER}
+
+            """
+            sh 'python cloud-testing/aws/sqs/poll_failures.py'
         }
 
         success {

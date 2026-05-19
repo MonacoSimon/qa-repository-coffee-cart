@@ -1,18 +1,18 @@
 ## Python environment
 
-Create virtual environment:
+Crear entoeno virtual:
 
 ```bash
 python3 -m venv venv
 ```
 
-Activate environment:
+Activar entorno:
 
 ```bash
 source venv/bin/activate
 ```
 
-Install dependencies:
+Instalar dependencias:
 
 ```bash
 pip install -r requirements.txt
