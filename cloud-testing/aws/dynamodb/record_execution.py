@@ -3,10 +3,11 @@ import botocore.exceptions
 import json
 import sys
 from datetime import datetime
+import os
 
 dynamodb = boto3.client(
     'dynamodb',
-    endpoint_url="http://localhost:4566",
+    endpoint_url=os.environ.get('LOCALSTACK_URL', 'http://localhost:4566'),
     aws_access_key_id='test',
     aws_secret_access_key='test',
     region_name='us-east-1'
