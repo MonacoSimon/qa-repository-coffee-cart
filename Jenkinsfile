@@ -105,6 +105,7 @@ pipeline {
 
                     stage('Cloud Setup') {
                         steps {
+                            sh 'apt-get install -y python3 python3-pip python3-venv 2>/dev/null || true'
                             sh 'chmod +x cloud-testing/aws/scripts/setup_all.sh'
                             sh '''
                                 LOCALSTACK_IP=$(docker inspect -f "{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}" localstack-coffee-shop)
