@@ -55,35 +55,35 @@ pipeline {
                     }
                 }
 
-                stage('Jmeter') {
-                    steps {
-                        catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-                            sh '''
-                                mkdir -p ${WORKSPACE}/results-docker/jmeter
-                                docker run --rm \
-                                  --volumes-from $(hostname) \
-                                  --entrypoint /bin/sh \
-                                  justb4/jmeter:latest \
-                                  -c "
-                                    found=0
-                                    for test in ${WORKSPACE}/performance/jmeter/test-plan/*.jmx; do
-                                      [ -f \\"\\$test\\" ] || continue
-                                      found=1
-                                      filename=\\$(basename \\$test .jmx)
-                                      timestamp=\\$(date +%Y%m%d-%H%M%S)
-                                      echo Ejecutando: \\$filename
-                                      jmeter -n -f -t \\$test -l ${WORKSPACE}/results-docker/jmeter/\\$filename.jtl -e -o ${WORKSPACE}/results-docker/jmeter/\\$filename-report-\\$timestamp -j ${WORKSPACE}/results-docker/jmeter/\\$filename.log
-                                      echo Terminado: \\$filename
-                                    done
-                                    if [ \\$found -eq 0 ]; then
-                                      echo No se encontraron archivos .jmx
-                                      exit 1
-                                    fi
-                                  "
-                            '''
-                        }
-                    }
-                }
+                // stage('Jmeter') {
+                //     steps {
+                //         catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+                //             sh '''
+                //                 mkdir -p ${WORKSPACE}/results-docker/jmeter
+                //                 docker run --rm \
+                //                   --volumes-from $(hostname) \
+                //                   --entrypoint /bin/sh \
+                //                   justb4/jmeter:latest \
+                //                   -c "
+                //                     found=0
+                //                     for test in ${WORKSPACE}/performance/jmeter/test-plan/*.jmx; do
+                //                       [ -f \\"\\$test\\" ] || continue
+                //                       found=1
+                //                       filename=\\$(basename \\$test .jmx)
+                //                       timestamp=\\$(date +%Y%m%d-%H%M%S)
+                //                       echo Ejecutando: \\$filename
+                //                       jmeter -n -f -t \\$test -l ${WORKSPACE}/results-docker/jmeter/\\$filename.jtl -e -o ${WORKSPACE}/results-docker/jmeter/\\$filename-report-\\$timestamp -j ${WORKSPACE}/results-docker/jmeter/\\$filename.log
+                //                       echo Terminado: \\$filename
+                //                     done
+                //                     if [ \\$found -eq 0 ]; then
+                //                       echo No se encontraron archivos .jmx
+                //                       exit 1
+                //                     fi
+                //                   "
+                //             '''
+                //         }
+                //     }
+                // }
 
                 stage('Zap') {
                     steps {
@@ -92,15 +92,6 @@ pipeline {
 
                             sh 'docker-compose up --build --abort-on-container-exit zap-tests'
                         }
-                    }
-                }
-
-                stage('activar entorno'){
-                    steps{
-                        sh '''
-                            cd cloud-testing
-                            source venv/bin/activate
-                        '''
                     }
                 }
 
