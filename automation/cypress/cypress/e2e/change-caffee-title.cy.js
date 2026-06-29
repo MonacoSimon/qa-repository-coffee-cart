@@ -1,6 +1,11 @@
-describe('template spec', () => {
+import HomePage from "../pages/HomePage"
+
+describe('change product name', () => {
+  const goHome = new HomePage();
+
   it('passes', () => {
-    cy.visit('https://coffee-cart.app/')
+    goHome.visit();
+
     cy.get('.router-link-active').should('be.visible')
     cy.get(':nth-child(2) > h4').should('be.visible')
     cy.get(':nth-child(2) > h4').dblclick()

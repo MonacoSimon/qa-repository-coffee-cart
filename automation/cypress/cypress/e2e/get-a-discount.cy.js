@@ -1,14 +1,24 @@
-describe('template spec', () => {
+import HomePage from "../pages/HomePage"
+import AddProduct from "../pages/AddProduct";
+import GoCart from "../pages/GoCart";
+
+describe('activate discount section', () => {
+  const goHome = new HomePage();
+  const add = new AddProduct();
+  const goCart = new GoCart();
+
   it('passes', () => {
-    cy.visit('https://coffee-cart.app/')
+    goHome.visit();
     cy.get('.router-link-active').should('be.visible')
-    cy.get('[data-cy="Espresso-Macchiato"]').click()
-    cy.get('[data-cy="Americano"]').click()
-    cy.get('[data-cy="Mocha"]').click()
+
+    add.add('Espresso-Macchiato');
+    add.add('Americano');
+    add.add('Mocha');
+
     cy.get('.promo > span').should('contain', "It's your lucky day! Get an extra cup of Mocha for $4")
     cy.get('.yes').click()
     cy.get(':nth-child(2) > a').should('contain', 'cart (4)')
-    cy.get(':nth-child(2) > a').click()
+    goCart.goCart();
     cy.get('ul[data-v-8965af83=""] > .list-item > :nth-child(1)').should('contain', 'Espresso Macchiato')
     cy.get('ul[data-v-8965af83=""] > .list-item > :nth-child(1)').should('contain', 'Americano')
     cy.get('ul[data-v-8965af83=""] > .list-item > :nth-child(1)').should('contain', 'Mocha')

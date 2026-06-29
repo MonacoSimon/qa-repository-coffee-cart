@@ -1,10 +1,23 @@
-describe('template spec', () => {
+import HomePage from '../pages/HomePage'
+import AddProduct from '../pages/AddProduct'
+import GoCart from '../pages/GoCart'
+
+describe('add a product to the cart', () => {
+  const goHome = new HomePage();
+  const add = new AddProduct();
+  const goCart = new GoCart();
+
   it('passes', () => {
-    cy.visit('https://coffee-cart.app/')
+    goHome.visit();
+
     cy.get('.router-link-active').should('be.visible')
-    cy.get('[data-cy="Espresso-Macchiato"]').click()
+
+    add.add('Espresso-Macchiato');
+
     cy.get(':nth-child(2) > a').should('contain', 'cart (1)')
-    cy.get(':nth-child(2) > a').click()
+
+    goCart.goCart();
+
     cy.get('ul[data-v-8965af83=""] > .list-item > :nth-child(1)').should('contain', 'Espresso Macchiato')
   })
 })
