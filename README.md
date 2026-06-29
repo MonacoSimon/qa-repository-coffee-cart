@@ -1,159 +1,165 @@
-
 # QA Repository — Coffee Cart
 
-Proyecto de automatización QA para https://coffee-cart.app.
-Incluye pruebas de API, end-to-end, performance, seguridad,
-accesibilidad y testing de infraestructura cloud, integradas
-en un pipeline Jenkins con Docker.
+Proyecto de automatización QA integral para https://coffee-cart.app. Incluye pruebas de API, End-to-End (E2E), rendimiento, seguridad, accesibilidad y testing de infraestructura Cloud, orquestadas dinámicamente mediante un pipeline de Jenkins sobre contenedores Docker.
 
 ---
 
-## Herramientas
+## Herramientas y Tecnologías
 
-| Tipo          | Herramienta         | Descripción                              |
-|---------------|---------------------|------------------------------------------|
-| API           | Postman / Newman    | Pruebas de endpoints REST                |
-| E2E           | Cypress             | Pruebas de interfaz y flujos de usuario  |
-| Performance   | JMeter / BlazeMeter | Carga con 20, 50, 80 y 100 usuarios      |
-| Seguridad     | OWASP ZAP           | Análisis de vulnerabilidades             |
-| Accesibilidad | Axe / Lighthouse    | Cumplimiento WCAG                        |
-| Cloud         | LocalStack / boto3  | Simulación de servicios AWS              |
-| CI/CD         | Jenkins             | Pipeline automatizado                    |
-| Contenedores  | Docker / Compose    | Aislamiento de cada suite                |
+| Capa de Testing | Herramienta | Descripción Técnica |
+|---|---|---|
+| API Testing | Postman / Newman | Validación de endpoints REST y automatización CLI |
+| E2E Automation | Cypress | Pruebas de interfaz bajo arquitectura Page Object Model (POM) |
+| Performance | JMeter / BlazeMeter | Pruebas de carga e inyección con 20, 50, 80 y 100 usuarios hilos |
+| Security Testing | OWASP ZAP | Escaneo dinámico (DAST) y análisis de vulnerabilidades |
+| Accesibilidad | Axe / Lighthouse | Auditoría automatizada bajo estándares WCAG |
+| Cloud Testing | LocalStack / Boto3 | Emulación local de servicios AWS (S3, SQS, DynamoDB, Lambda) |
+| Orquestación CI/CD | Jenkins | Pipeline declarativo estructurado en etapas |
+| Contenedores | Docker / Compose | Aislamiento y portabilidad de entornos de ejecución |
 
 ---
 
-## Estructura del proyecto
+## Estructura del Proyecto
+
+```text
 qa-repository-coffee-cart/
-├── api-testing/            Pruebas de API con Postman y Newman
-│   ├── postman/            Colecciones y entornos
-│   ├── newman/             Runner CLI y reportes
-│   └── results-docker/     Resultados generados en pipeline
-├── automation/             Pruebas E2E con Cypress
-│   ├── cypress/            Tests, fixtures y configuración
-│   └── Dockerfile          Imagen para correr Cypress en pipeline
-├── performance/            Pruebas de carga
-│   ├── jmeter/             Planes de prueba y resultados
-│   └── blazemeter/         Evidencia de ejecución en nube
-├── security/               Análisis de seguridad
-│   └── zap-analysis/       Reportes OWASP ZAP
-├── accesibility-testing/   Pruebas de accesibilidad
-│   ├── axe/                Código de análisis
-│   └── lighthouse/         Reportes HTML
-├── cloud-testing/          Infraestructura AWS con LocalStack
-│   ├── aws/                Scripts Python por servicio
-│   └── localstack/         Docker Compose de LocalStack
-├── bug-reports/            Reportes de bugs con evidencia y Jira
-├── test-scenarios/         Escenarios de prueba documentados
-├── results-docker/         Resultados consolidados del pipeline
-├── results-jenkins/        Capturas y resumen del pipeline
-├── docker-compose.yml      Orquestación principal del pipeline
-├── Jenkinsfile             Definición del pipeline CI/CD
-└── set-up.sh               Verificación del entorno local
+├── accesibility-testing/      # Pruebas de accesibilidad (Axe y Lighthouse)
+│   ├── axe/                   # Scripts de integración y análisis
+│   ├── lighthouse/            # Reportes HTML de rendimiento y UX
+│   └── inform.md              # Informe consolidado de accesibilidad
+├── api-testing/               # Pruebas de API automatizadas
+│   ├── postman/               # Colecciones y entornos de variables
+│   ├── newman/                # Automatización de ejecución CLI
+│   ├── results-docker/        # Resultados de API generados en contenedor
+│   └── run-docker.sh          # Script de ejecución local para Newman
+├── automation/                # Pruebas E2E con Cypress (Arquitectura POM)
+│   ├── cypress/               # Tests, selectores, páginas y configuración
+│   ├── Dockerfile             # Definición de imagen aislada para Cypress
+│   └── run.sh                 # Script de inicialización de la suite
+├── bug-reports/               # Reportes formales de fallas encontradas
+│   ├── bug-report.ods         # Matriz detallada de defectos (ODS)
+│   ├── bug-report.pdf         # Matriz detallada de defectos (PDF)
+│   ├── evidence/              # Capturas y logs de fallas
+│   └── jira/                  # Mapeo y tickets asociados a Jira
+├── cloud-testing/             # Infraestructura AWS emulada
+│   ├── aws/                   # Scripts de automatización en Python (Boto3)
+│   ├── localstack/            # Configuración y aprovisionamiento local
+│   └── requirements.txt       # Dependencias de Python para el entorno Cloud
+├── conclusions/               # Resumen final del proyecto de calidad
+│   └── inform.md              # Informe ejecutivo de QA
+├── performance/               # Pruebas de rendimiento y estrés
+│   ├── jmeter/                # Scripts JMX y reportes de latencia
+│   └── blazemeter/            # Reportes en nube distribuidos
+├── results-docker/            # Centralización local de reportes generados
+│   ├── jmeter/                # Logs e informes de rendimiento
+│   ├── newman/                # Reportes JSON/HTML de APIs
+│   └── zap/                   # Reportes de vulnerabilidades
+├── results-jenkins/           # Evidencias de ejecución en servidor CI/CD
+│   ├── pipeline-inform.md     # Estado y tiempos de las etapas
+│   └── screenshots/           # Capturas de pantallas del proceso
+├── security/                  # Análisis de vulnerabilidades web
+│   ├── zap-analysis/          # Sesiones y mapeos de ataque
+│   └── inform.md              # Informe de seguridad estático
+├── test-scenarios/            # Diseño e ingeniería de pruebas
+│   ├── test-scenarios.ods     # Matrices de casos de prueba (ODS)
+│   └── test-scenarios.pdf     # Matrices de casos de prueba (PDF)
+├── docker-compose.yml         # Orquestación de servicios y suites
+├── Jenkinsfile                # Pipeline declarativo de integración continua
+├── requirements.txt           # Dependencias de Python del proyecto raíz
+└── set-up.sh                  # Script de validación de entorno local
 
----
+Arquitectura del Pipeline
 
-## Arquitectura del pipeline
+El flujo de integración continua administra el ciclo de vida completo de las pruebas, abstrayendo las dependencias del sistema operativo mediante contenedores independientes.
+Plaintext
+
 Jenkins
-|
-+-- docker-compose.yml
-|
-+-- [api-test]     Newman en Docker  → results-docker/newman/
-+-- [cypress-test] Cypress en Docker → results-docker/cypress/
-+-- [jmeter]       JMeter en Docker  → results-docker/jmeter/
-+-- [zap]          OWASP ZAP         → results-docker/zap/
-|
-+-- LocalStack (AWS simulado)
-|
-+-- S3        Almacena reportes por suite y fecha
-+-- SQS       Cola de notificaciones de fallos
-+-- DynamoDB  Historial de ejecuciones
-+-- Lambda    Validación automática de resultados
+ │
+ ├── docker-compose.yml (Orquestación de infraestructura y runners)
+ │
+ ├── [api-test]      Newman en Docker  --> results-docker/newman/
+ ├── [cypress-test]  Cypress en Docker --> results-docker/cypress/ (Patrón POM)
+ ├── [jmeter]        JMeter en Docker  --> results-docker/jmeter/
+ ├── [zap]           OWASP ZAP DAST    --> results-docker/zap/
+ │
+ └── LocalStack (Entorno Cloud AWS Aislado)
+      ├── Amazon S3        --> Almacenamiento perenne de reportes por fecha
+      ├── Amazon SQS       --> Cola de mensajería para manejo de fallas
+      ├── Amazon DynamoDB  --> Historial analítico de ejecuciones de la suite
+      └── AWS Lambda       --> Validación serverless automática de resultados
 
-Cada suite corre en su propio contenedor Docker definido en `docker-compose.yml`.
-Los resultados se centralizan en `results-docker/` y luego se suben a S3.
+Cada suite de pruebas se ejecuta de forma aislada dentro de su propio contenedor definido en docker-compose.yml. Los resultados son extraídos de los contenedores hacia el directorio results-docker/ y posteriormente cargados en el bucket de S3 emulado.
+Requisitos del Sistema
 
----
+    Docker Engine (Versión reciente instalada y activa)
 
-## Requisitos
+    Docker Compose
 
-- Docker Engine
-- Docker Compose
-- Python 3.12 (para cloud-testing)
-- Jenkins con acceso a Docker socket
+    Python 3.12 (Solo requerido para desarrollo o ejecución local de scripts Cloud)
 
----
+    Servidor Jenkins configurado con acceso al socket de Docker (/var/run/docker.sock)
 
-## Setup inicial
+Configuración Inicial (Setup)
 
-Verificar el entorno antes de correr el pipeline:
+Antes de realizar la ejecución del pipeline o de suites individuales, valide el estado del entorno local corriendo:
+Bash
 
-```bash
 bash set-up.sh
-```
 
-El script verifica que Docker esté instalado, que el daemon esté activo
-y que `docker-compose.yml` esté presente.
+Este script automatizado confirma la presencia de las herramientas críticas de Docker y la estructura del proyecto.
+Configuración Manual del Módulo Cloud
 
-Para la parte de cloud testing, el pipeline Jenkins instala las dependencias
-Python automáticamente en cada ejecución. Para correr cloud testing localmente:
+El pipeline automatiza este proceso. Si requiere depurar o ejecutar las pruebas de infraestructura de AWS de manera local, ejecute:
+Bash
 
-```bash
 cd cloud-testing
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 cd localstack && docker compose up -d
 bash ../aws/scripts/setup_all.sh
-```
 
----
+Ejecución del Pipeline Completo
 
-## Correr el pipeline
+El ciclo de automatización está diseñado para ser gatillado de manera remota desde Jenkins apuntando a este repositorio. Al ejecutarse, el archivo Jenkinsfile realiza los siguientes pasos de manera secuencial:
 
-El pipeline se ejecuta desde Jenkins apuntando al repositorio.
-En cada build Jenkins:
+    Limpieza de espacios de trabajo previos.
 
-1. Levanta LocalStack
-2. Inicializa servicios AWS (S3, SQS, DynamoDB, Lambda)
-3. Corre Newman (API)
-4. Corre Cypress (E2E)
-5. Corre JMeter (performance)
-6. Corre OWASP ZAP (seguridad)
-7. Sube todos los reportes a S3
-8. Registra metadata en DynamoDB
-9. Revisa la cola SQS para determinar si el build pasa o falla
-10. Apaga todos los contenedores
+    Inicialización de LocalStack y aprovisionamiento de recursos AWS (S3, SQS, DynamoDB, Lambda).
 
----
+    Ejecución de pruebas de endpoints mediante Newman.
 
-## Correr suites individualmente
+    Ejecución de automatización de interfaz con Cypress usando Page Object Model (POM).
 
-```bash
-# API - Newman
+    Inyección de cargas de rendimiento controladas con Apache JMeter.
+
+    Escaneo dinámico de vulnerabilidades de seguridad a través de OWASP ZAP.
+
+    Extracción y empaquetamiento de reportes hacia Amazon S3 ordenados por marcas de tiempo.
+
+    Persistencia de metadatos de la corrida actual en tablas de DynamoDB.
+
+    Consumo y procesamiento de colas SQS para la determinación automatizada del estado del build (Pass/Fail).
+
+    Desmantelamiento de contenedores y limpieza del entorno de ejecución (Teardown).
+
+Ejecución de Suites Individuales
+
+Si requiere aislar ejecuciones y realizar pruebas granulares en su entorno local, puede invocar los siguientes comandos:
+Bash
+
+# Suite de API (Postman / Newman)
 cd api-testing && bash run-docker.sh
 
-# E2E - Cypress
+# Suite E2E (Cypress con arquitectura POM)
 cd automation && bash run.sh
 
-# Performance - JMeter
+# Suite de Rendimiento (Apache JMeter)
 cd performance/jmeter && bash run.sh
 
-# Seguridad - ZAP
+# Suite de Seguridad (OWASP ZAP)
 docker compose up zap
-```
 
----
+Resultados y Reportabilidad
 
-## Resultados
-
-Los reportes se generan en `results-docker/` durante el pipeline y se
-archivan en Jenkins. Adicionalmente, se suben a S3 en LocalStack
-organizados por suite y fecha de ejecución.
-
----
-
-## Documentación por módulo
-
-Cada directorio principal tiene su propio README con instrucciones
-específicas de setup y ejecución.
+Los reportes y evidencias en crudo se unifican transitoriamente en el directorio local results-docker/ durante el transcurso del pipeline. Al finalizar el proceso, la persistencia se realiza en LocalStack, alojando los archivos en Amazon S3 bajo esquemas de nombres normalizados basados en la fecha y el componente evaluado. Los reportes consolidados definitivos e históricos de Jenkins se encuentran accesibles dentro de los módulos results-jenkins/ y conclusions/.
