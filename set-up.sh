@@ -38,6 +38,37 @@ fi
 echo "OK - docker-compose.yml encontrado"
 echo ""
 
+echo "[5/7] Verificando Node.js..."
+if ! command -v node &> /dev/null; then
+    echo "ERROR: Node.js no esta instalado"
+    echo "       Descargar desde: https://nodejs.org/"
+    exit 1
+fi
+echo "OK - $(node --version)"
+echo ""
+
+echo "[6/7] Verificando proyecto Cypress..."
+if [ -f "automation/cypress/package.json" ]; then
+    cd automation/cypress
+
+    echo "Verificando dependencias..."
+
+    if npm list --depth=0 &> /dev/null; then
+        echo "OK - Dependencias ya instaladas"
+    else
+        echo "Instalando dependencias..."
+        npm install
+        echo "OK - Dependencias instaladas"
+    fi
+
+    cd ../..
+else
+    echo "AVISO: automation/cypress/package.json no encontrado"
+fi
+echo ""
+
+echo "[7/7] Verificando entorno cloud-testing..."
+
 echo "[5/6] Verificando Python3..."
 if ! command -v python3 &> /dev/null; then
     echo "AVISO: python3 no encontrado - requerido para cloud-testing"
